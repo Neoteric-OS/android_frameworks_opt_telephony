@@ -46,10 +46,10 @@ import android.os.ParcelUuid;
 import android.os.UserHandle;
 import android.provider.Settings;
 import android.provider.Settings.SettingNotFoundException;
-// QTI_BEGIN: 2021-08-17: Telephony: Fix default voice SUB and phone account mismatch
+// QTI_BEGIN: 2021-08-16: Telephony: Fix default voice SUB and phone account mismatch
 import android.telecom.PhoneAccountHandle;
 import android.telecom.TelecomManager;
-// QTI_END: 2021-08-17: Telephony: Fix default voice SUB and phone account mismatch
+// QTI_END: 2021-08-16: Telephony: Fix default voice SUB and phone account mismatch
 import android.telephony.CarrierConfigManager;
 import android.telephony.SubscriptionInfo;
 import android.telephony.SubscriptionManager;
@@ -144,9 +144,9 @@ public class MultiSimSettingController extends Handler {
     protected static MultiSimSettingController sInstance = null;
 // QTI_END: 2019-04-15: Telephony: Fix mobile data setting issue for multi-sim
 
-// QTI_BEGIN: 2023-11-10: Telephony: Remove legacy subscription code
+// QTI_BEGIN: 2023-11-09: Telephony: Remove legacy subscription code
     // This will be set true when handling EVENT_ALL_SUBSCRIPTIONS_LOADED.
-// QTI_END: 2023-11-10: Telephony: Remove legacy subscription code
+// QTI_END: 2023-11-09: Telephony: Remove legacy subscription code
     private boolean mSubInfoInitialized = false;
 
     // mInitialHandling is to make sure we don't always ask user to re-select data SIM after reboot.
@@ -399,19 +399,19 @@ public class MultiSimSettingController extends Handler {
         if (mContext.getResources().getBoolean(
                 com.android.internal.R.bool.config_voice_data_sms_auto_fallback)) return;
 // QTI_END: 2021-05-24: Telephony: Delete vendor class files added for Data
-// QTI_BEGIN: 2023-11-10: Telephony: Remove legacy subscription code
+// QTI_BEGIN: 2023-11-09: Telephony: Remove legacy subscription code
         SubscriptionInfo subInfo = mSubscriptionManagerService.getSubscriptionInfo(subId);
         int defaultDataSubId = mSubscriptionManagerService.getDefaultDataSubId();
-// QTI_END: 2023-11-10: Telephony: Remove legacy subscription code
+// QTI_END: 2023-11-09: Telephony: Remove legacy subscription code
 
         // If user is enabling a non-default non-opportunistic subscription, make it default.
         if (defaultDataSubId != subId && subInfo != null && !subInfo.isOpportunistic() && enable
                 && subInfo.isActive() && setDefaultData) {
             android.provider.Settings.Global.putInt(mContext.getContentResolver(),
                     SETTING_USER_PREF_DATA_SUB, subId);
-// QTI_BEGIN: 2023-11-10: Telephony: Remove legacy subscription code
+// QTI_BEGIN: 2023-11-09: Telephony: Remove legacy subscription code
             mSubscriptionManagerService.setDefaultDataSubId(subId);
-// QTI_END: 2023-11-10: Telephony: Remove legacy subscription code
+// QTI_END: 2023-11-09: Telephony: Remove legacy subscription code
         }
     }
 
@@ -422,10 +422,10 @@ public class MultiSimSettingController extends Handler {
         if (DBG) log("onRoamingDataEnabled");
         setRoamingDataEnabledForGroup(subId, enable);
 
-// QTI_BEGIN: 2023-11-10: Telephony: Remove legacy subscription code
+// QTI_BEGIN: 2023-11-09: Telephony: Remove legacy subscription code
         // Also inform SubscriptionManagerService as it keeps another copy of user setting.
         mSubscriptionManagerService.setDataRoaming(enable ? 1 : 0, subId);
-// QTI_END: 2023-11-10: Telephony: Remove legacy subscription code
+// QTI_END: 2023-11-09: Telephony: Remove legacy subscription code
     }
 
     /**
@@ -493,9 +493,9 @@ public class MultiSimSettingController extends Handler {
      */
     @VisibleForTesting
     public boolean isCarrierConfigLoadedForAllSub() {
-// QTI_BEGIN: 2023-11-10: Telephony: Remove legacy subscription code
+// QTI_BEGIN: 2023-11-09: Telephony: Remove legacy subscription code
         int[] activeSubIds = mSubscriptionManagerService.getActiveSubIdList(false);
-// QTI_END: 2023-11-10: Telephony: Remove legacy subscription code
+// QTI_END: 2023-11-09: Telephony: Remove legacy subscription code
         for (int activeSubId : activeSubIds) {
             boolean isLoaded = false;
             for (int configLoadedSub : mCarrierConfigLoadedSubIds) {
@@ -573,11 +573,11 @@ public class MultiSimSettingController extends Handler {
     private void onSubscriptionGroupChanged(ParcelUuid groupUuid) {
         if (DBG) log("onSubscriptionGroupChanged");
 
-// QTI_BEGIN: 2023-11-10: Telephony: Remove legacy subscription code
+// QTI_BEGIN: 2023-11-09: Telephony: Remove legacy subscription code
         List<SubscriptionInfo> infoList = mSubscriptionManagerService.getSubscriptionsInGroup(
                 groupUuid, mContext.getOpPackageName(), mContext.getAttributionTag());
         if (infoList == null || infoList.isEmpty()) return;
-// QTI_END: 2023-11-10: Telephony: Remove legacy subscription code
+// QTI_END: 2023-11-09: Telephony: Remove legacy subscription code
 
         // Get a reference subscription to copy settings from.
         // TODO: the reference sub should be passed in from external caller.
@@ -602,10 +602,10 @@ public class MultiSimSettingController extends Handler {
                     mContext, Settings.Global.MOBILE_DATA, INVALID_SUBSCRIPTION_ID, enable);
         }
         boolean setDefaultData = true;
-// QTI_BEGIN: 2023-11-10: Telephony: Remove legacy subscription code
+// QTI_BEGIN: 2023-11-09: Telephony: Remove legacy subscription code
         List<SubscriptionInfo> activeSubList = mSubscriptionManagerService
                 .getActiveSubscriptionInfoList(mContext.getOpPackageName(),
-// QTI_END: 2023-11-10: Telephony: Remove legacy subscription code
+// QTI_END: 2023-11-09: Telephony: Remove legacy subscription code
                         mContext.getAttributionTag(), true/*isForAllProfile*/);
         for (SubscriptionInfo activeInfo : activeSubList) {
             if (!(groupUuid.equals(activeInfo.getGroupUuid()))) {
@@ -629,9 +629,9 @@ public class MultiSimSettingController extends Handler {
             onRoamingDataEnabled(refSubId, enable);
         }
 
-// QTI_BEGIN: 2023-11-10: Telephony: Remove legacy subscription code
+// QTI_BEGIN: 2023-11-09: Telephony: Remove legacy subscription code
         mSubscriptionManagerService.syncGroupedSetting(refSubId);
-// QTI_END: 2023-11-10: Telephony: Remove legacy subscription code
+// QTI_END: 2023-11-09: Telephony: Remove legacy subscription code
     }
 
     /**
@@ -652,12 +652,12 @@ public class MultiSimSettingController extends Handler {
         if (DBG) log("updateDefaults");
         if (!isReadyToReevaluate()) return;
 
-// QTI_BEGIN: 2023-11-10: Telephony: Remove legacy subscription code
+// QTI_BEGIN: 2023-11-09: Telephony: Remove legacy subscription code
         List<SubscriptionInfo> activeSubInfos = mSubscriptionManagerService
                 .getActiveSubscriptionInfoList(mContext.getOpPackageName(),
-// QTI_END: 2023-11-10: Telephony: Remove legacy subscription code
+// QTI_END: 2023-11-09: Telephony: Remove legacy subscription code
                         mContext.getAttributionTag(), true/*isForAllProfile*/);
-// QTI_BEGIN: 2023-11-10: Telephony: Remove legacy subscription code
+// QTI_BEGIN: 2023-11-09: Telephony: Remove legacy subscription code
 
         if (ArrayUtils.isEmpty(activeSubInfos)) {
             mPrimarySubList.clear();
@@ -669,7 +669,7 @@ public class MultiSimSettingController extends Handler {
             mSubscriptionManagerService.setDefaultSmsSubId(
                     SubscriptionManager.INVALID_SUBSCRIPTION_ID);
             return;
-// QTI_END: 2023-11-10: Telephony: Remove legacy subscription code
+// QTI_END: 2023-11-09: Telephony: Remove legacy subscription code
         }
 
         int change = updatePrimarySubListAndGetChangeType(activeSubInfos);
@@ -793,9 +793,9 @@ public class MultiSimSettingController extends Handler {
             // any previous primary subscription becomes inactive, we consider it
             for (int subId : prevPrimarySubList) {
                 if (mPrimarySubList.contains(subId)) continue;
-// QTI_BEGIN: 2023-11-10: Telephony: Remove legacy subscription code
+// QTI_BEGIN: 2023-11-09: Telephony: Remove legacy subscription code
                 SubscriptionInfo subInfo = mSubscriptionManagerService.getSubscriptionInfo(subId);
-// QTI_END: 2023-11-10: Telephony: Remove legacy subscription code
+// QTI_END: 2023-11-09: Telephony: Remove legacy subscription code
 
                 if (subInfo == null || !subInfo.isActive()) {
                     for (int currentSubId : mPrimarySubList) {
@@ -1036,12 +1036,12 @@ public class MultiSimSettingController extends Handler {
             if (phone != null && phone.isCdmaSubscriptionAppPresent()) {
                 cdmaPhoneCount++;
                 String simName = null;
-// QTI_BEGIN: 2023-11-10: Telephony: Remove legacy subscription code
+// QTI_BEGIN: 2023-11-09: Telephony: Remove legacy subscription code
                 SubscriptionInfoInternal subInfo = mSubscriptionManagerService
                         .getSubscriptionInfoInternal(subId);
                 if (subInfo != null) {
                     simName = subInfo.getDisplayName();
-// QTI_END: 2023-11-10: Telephony: Remove legacy subscription code
+// QTI_END: 2023-11-09: Telephony: Remove legacy subscription code
                 }
                 if (TextUtils.isEmpty(simName)) {
                     // Fall back to carrier name.
@@ -1072,16 +1072,16 @@ public class MultiSimSettingController extends Handler {
                 com.android.internal.R.bool.config_voice_data_sms_auto_fallback)) return;
 // QTI_END: 2021-05-24: Telephony: Delete vendor class files added for Data
 
-// QTI_BEGIN: 2023-11-10: Telephony: Remove legacy subscription code
+// QTI_BEGIN: 2023-11-09: Telephony: Remove legacy subscription code
         int defaultDataSub = mSubscriptionManagerService.getDefaultDataSubId();
-// QTI_END: 2023-11-10: Telephony: Remove legacy subscription code
+// QTI_END: 2023-11-09: Telephony: Remove legacy subscription code
 
         for (Phone phone : PhoneFactory.getPhones()) {
-// QTI_BEGIN: 2023-11-10: Telephony: Remove legacy subscription code
+// QTI_BEGIN: 2023-11-09: Telephony: Remove legacy subscription code
             SubscriptionInfoInternal subInfo = mSubscriptionManagerService
                     .getSubscriptionInfoInternal(phone.getSubId());
             boolean isOpportunistic = subInfo != null && subInfo.isOpportunistic();
-// QTI_END: 2023-11-10: Telephony: Remove legacy subscription code
+// QTI_END: 2023-11-09: Telephony: Remove legacy subscription code
             if (phone.getSubId() != defaultDataSub
                     && SubscriptionManager.isValidSubscriptionId(phone.getSubId())
                     && !isOpportunistic
@@ -1100,7 +1100,7 @@ public class MultiSimSettingController extends Handler {
                 || !SubscriptionManager.isUsableSubscriptionId(subId2)) return false;
         if (subId1 == subId2) return true;
 
-// QTI_BEGIN: 2023-11-10: Telephony: Remove legacy subscription code
+// QTI_BEGIN: 2023-11-09: Telephony: Remove legacy subscription code
         SubscriptionInfoInternal subInfo1 =
                 mSubscriptionManagerService.getSubscriptionInfoInternal(subId1);
         SubscriptionInfoInternal subInfo2 =
@@ -1108,7 +1108,7 @@ public class MultiSimSettingController extends Handler {
         return subInfo1 != null && subInfo2 != null
                 && !TextUtils.isEmpty(subInfo1.getGroupUuid())
                 && subInfo1.getGroupUuid().equals(subInfo2.getGroupUuid());
-// QTI_END: 2023-11-10: Telephony: Remove legacy subscription code
+// QTI_END: 2023-11-09: Telephony: Remove legacy subscription code
     }
 
     /**
@@ -1118,13 +1118,13 @@ public class MultiSimSettingController extends Handler {
     protected void setUserDataEnabledForGroup(int subId, boolean enable) {
         log("setUserDataEnabledForGroup subId " + subId + " enable " + enable);
         List<SubscriptionInfo> infoList = null;
-// QTI_BEGIN: 2023-11-10: Telephony: Remove legacy subscription code
+// QTI_BEGIN: 2023-11-09: Telephony: Remove legacy subscription code
         SubscriptionInfoInternal subInfo = mSubscriptionManagerService
                 .getSubscriptionInfoInternal(subId);
         if (subInfo != null && !subInfo.getGroupUuid().isEmpty()) {
             infoList = mSubscriptionManagerService.getSubscriptionsInGroup(
                     ParcelUuid.fromString(subInfo.getGroupUuid()), mContext.getOpPackageName(),
-// QTI_END: 2023-11-10: Telephony: Remove legacy subscription code
+// QTI_END: 2023-11-09: Telephony: Remove legacy subscription code
                     mContext.getAttributionTag());
         }
 
@@ -1135,10 +1135,10 @@ public class MultiSimSettingController extends Handler {
             // TODO: simplify when setUserDataEnabled becomes singleton
             if (info.isActive()) {
                 // For active subscription, call setUserDataEnabled through DataSettingsManager.
-// QTI_BEGIN: 2023-11-10: Telephony: Remove legacy subscription code
+// QTI_BEGIN: 2023-11-09: Telephony: Remove legacy subscription code
                 Phone phone = PhoneFactory.getPhone(mSubscriptionManagerService
                         .getPhoneId(currentSubId));
-// QTI_END: 2023-11-10: Telephony: Remove legacy subscription code
+// QTI_END: 2023-11-09: Telephony: Remove legacy subscription code
                 // If enable is true and it's not opportunistic subscription, we don't enable it,
                 // as there can't be two
                 if (phone != null) {
@@ -1159,14 +1159,14 @@ public class MultiSimSettingController extends Handler {
      * are synced.
      */
     private void setRoamingDataEnabledForGroup(int subId, boolean enable) {
-// QTI_BEGIN: 2023-11-10: Telephony: Remove legacy subscription code
+// QTI_BEGIN: 2023-11-09: Telephony: Remove legacy subscription code
         SubscriptionInfoInternal subInfo = mSubscriptionManagerService
                 .getSubscriptionInfoInternal(subId);
         if (subInfo == null || subInfo.getGroupUuid().isEmpty()) return;
         List<SubscriptionInfo> infoList = SubscriptionManagerService.getInstance()
                 .getSubscriptionsInGroup(ParcelUuid.fromString(subInfo.getGroupUuid()),
                         mContext.getOpPackageName(), mContext.getAttributionTag());
-// QTI_END: 2023-11-10: Telephony: Remove legacy subscription code
+// QTI_END: 2023-11-09: Telephony: Remove legacy subscription code
         if (infoList == null) return;
 
         for (SubscriptionInfo info : infoList) {
@@ -1219,12 +1219,12 @@ public class MultiSimSettingController extends Handler {
     // subscription gets deactivated or removed, we need to automatically disable the grouped
     // opportunistic subscription, which will be marked isGroupDisabled as true by SubController.
     private void deactivateGroupedOpportunisticSubscriptionIfNeeded() {
-// QTI_BEGIN: 2023-11-10: Telephony: Remove legacy subscription code
+// QTI_BEGIN: 2023-11-09: Telephony: Remove legacy subscription code
         List<SubscriptionInfo> opptSubList = mSubscriptionManagerService.getAllSubInfoList(
                 mContext.getOpPackageName(), mContext.getAttributionTag()).stream()
                 .filter(SubscriptionInfo::isOpportunistic)
                 .collect(Collectors.toList());
-// QTI_END: 2023-11-10: Telephony: Remove legacy subscription code
+// QTI_END: 2023-11-09: Telephony: Remove legacy subscription code
 
         if (ArrayUtils.isEmpty(opptSubList)) return;
 
@@ -1260,12 +1260,12 @@ public class MultiSimSettingController extends Handler {
     // would be selected as preferred voice/data/sms SIM.
     private void updateUserPreferences(List<Integer> primarySubList, boolean dataSelected,
             boolean voiceSelected, boolean smsSelected) {
-// QTI_BEGIN: 2023-11-10: Telephony: Remove legacy subscription code
+// QTI_BEGIN: 2023-11-09: Telephony: Remove legacy subscription code
         // In Single SIM case or if there are no activated subs available, no need to update.
         // EXIT.
         if ((primarySubList.isEmpty()) || (mSubscriptionManagerService
                 .getActiveSubInfoCountMax() == 1)) {
-// QTI_END: 2023-11-10: Telephony: Remove legacy subscription code
+// QTI_END: 2023-11-09: Telephony: Remove legacy subscription code
             return;
         }
 
@@ -1273,78 +1273,78 @@ public class MultiSimSettingController extends Handler {
             log("Radio is in Invalid state, Ignore Updating User Preference!!!");
             return;
         }
-// QTI_BEGIN: 2023-11-10: Telephony: Remove legacy subscription code
+// QTI_BEGIN: 2023-11-09: Telephony: Remove legacy subscription code
         final int defaultDataSubId = mSubscriptionManagerService.getDefaultDataSubId();
-// QTI_END: 2023-11-10: Telephony: Remove legacy subscription code
+// QTI_END: 2023-11-09: Telephony: Remove legacy subscription code
 
-// QTI_BEGIN: 2023-11-10: Telephony: Remove legacy subscription code
+// QTI_BEGIN: 2023-11-09: Telephony: Remove legacy subscription code
         if (DBG) {
             log("updateUserPreferences:  dds = " + defaultDataSubId + " voice = "
                     + mSubscriptionManagerService.getDefaultVoiceSubId()
                     + " sms = " + mSubscriptionManagerService.getDefaultSmsSubId());
         }
-// QTI_END: 2023-11-10: Telephony: Remove legacy subscription code
+// QTI_END: 2023-11-09: Telephony: Remove legacy subscription code
 
         int autoDefaultSubId = primarySubList.get(0);
 
         if (hasMessaging() && (primarySubList.size() == 1) && !smsSelected) {
-// QTI_BEGIN: 2023-11-10: Telephony: Remove legacy subscription code
+// QTI_BEGIN: 2023-11-09: Telephony: Remove legacy subscription code
             mSubscriptionManagerService.setDefaultSmsSubId(autoDefaultSubId);
-// QTI_END: 2023-11-10: Telephony: Remove legacy subscription code
+// QTI_END: 2023-11-09: Telephony: Remove legacy subscription code
         }
 
         if (hasCalling() && (primarySubList.size() == 1) && !voiceSelected) {
-// QTI_BEGIN: 2023-11-10: Telephony: Remove legacy subscription code
+// QTI_BEGIN: 2023-11-09: Telephony: Remove legacy subscription code
             mSubscriptionManagerService.setDefaultVoiceSubId(autoDefaultSubId);
-// QTI_END: 2023-11-10: Telephony: Remove legacy subscription code
-// QTI_BEGIN: 2021-08-17: Telephony: Fix default voice SUB and phone account mismatch
+// QTI_END: 2023-11-09: Telephony: Remove legacy subscription code
+// QTI_BEGIN: 2021-08-16: Telephony: Fix default voice SUB and phone account mismatch
         } else if (!voiceSelected) {
-// QTI_END: 2021-08-17: Telephony: Fix default voice SUB and phone account mismatch
-// QTI_BEGIN: 2023-11-10: Telephony: Remove legacy subscription code
+// QTI_END: 2021-08-16: Telephony: Fix default voice SUB and phone account mismatch
+// QTI_BEGIN: 2023-11-09: Telephony: Remove legacy subscription code
             final int defVoiceSubId = mSubscriptionManagerService.getDefaultVoiceSubId();
-// QTI_END: 2023-11-10: Telephony: Remove legacy subscription code
-// QTI_BEGIN: 2021-08-17: Telephony: Fix default voice SUB and phone account mismatch
+// QTI_END: 2023-11-09: Telephony: Remove legacy subscription code
+// QTI_BEGIN: 2021-08-16: Telephony: Fix default voice SUB and phone account mismatch
             TelecomManager telecomManager = mContext.getSystemService(TelecomManager.class);
             TelephonyManager telephonyManager =
                     mContext.getSystemService(TelephonyManager.class);
             PhoneAccountHandle currentHandle =
                     telecomManager.getUserSelectedOutgoingPhoneAccount();
             int currentVoiceSubId = telephonyManager.getSubscriptionId(currentHandle);
-// QTI_END: 2021-08-17: Telephony: Fix default voice SUB and phone account mismatch
+// QTI_END: 2021-08-16: Telephony: Fix default voice SUB and phone account mismatch
 // QTI_BEGIN: 2023-03-27: Telephony: Make SubscriptionManagerService related changes
             if (DBG) log("defaultVoiceSubId = " + defVoiceSubId
 // QTI_END: 2023-03-27: Telephony: Make SubscriptionManagerService related changes
-// QTI_BEGIN: 2021-08-17: Telephony: Fix default voice SUB and phone account mismatch
+// QTI_BEGIN: 2021-08-16: Telephony: Fix default voice SUB and phone account mismatch
                     + " currentVoiceSubId = " + currentVoiceSubId);
             if (defVoiceSubId != currentVoiceSubId) {
                 if (primarySubList.contains(currentVoiceSubId)) {
-// QTI_END: 2021-08-17: Telephony: Fix default voice SUB and phone account mismatch
-// QTI_BEGIN: 2023-11-10: Telephony: Remove legacy subscription code
+// QTI_END: 2021-08-16: Telephony: Fix default voice SUB and phone account mismatch
+// QTI_BEGIN: 2023-11-09: Telephony: Remove legacy subscription code
                     mSubscriptionManagerService.setDefaultVoiceSubId(currentVoiceSubId);
-// QTI_END: 2023-11-10: Telephony: Remove legacy subscription code
-// QTI_BEGIN: 2021-08-17: Telephony: Fix default voice SUB and phone account mismatch
+// QTI_END: 2023-11-09: Telephony: Remove legacy subscription code
+// QTI_BEGIN: 2021-08-16: Telephony: Fix default voice SUB and phone account mismatch
                 } else {
-// QTI_END: 2021-08-17: Telephony: Fix default voice SUB and phone account mismatch
-// QTI_BEGIN: 2023-11-10: Telephony: Remove legacy subscription code
+// QTI_END: 2021-08-16: Telephony: Fix default voice SUB and phone account mismatch
+// QTI_BEGIN: 2023-11-09: Telephony: Remove legacy subscription code
                     mSubscriptionManagerService.setDefaultVoiceSubId(defVoiceSubId);
-// QTI_END: 2023-11-10: Telephony: Remove legacy subscription code
-// QTI_BEGIN: 2021-08-17: Telephony: Fix default voice SUB and phone account mismatch
+// QTI_END: 2023-11-09: Telephony: Remove legacy subscription code
+// QTI_BEGIN: 2021-08-16: Telephony: Fix default voice SUB and phone account mismatch
                 }
             }
-// QTI_END: 2021-08-17: Telephony: Fix default voice SUB and phone account mismatch
+// QTI_END: 2021-08-16: Telephony: Fix default voice SUB and phone account mismatch
         }
 
         int userPrefDataSubId = getUserPrefDataSubIdFromDB();
-// QTI_BEGIN: 2021-10-14: Telephony: Disable DDS revert feature when smart DDS is enabled
+// QTI_BEGIN: 2021-10-13: Telephony: Disable DDS revert feature when smart DDS is enabled
         final boolean isSmartDdsEnabled = Settings.Global.getInt(mContext.getContentResolver(),
                 Settings.Global.SMART_DDS_SWITCH, 0) != 0;
-// QTI_END: 2021-10-14: Telephony: Disable DDS revert feature when smart DDS is enabled
+// QTI_END: 2021-10-13: Telephony: Disable DDS revert feature when smart DDS is enabled
 
-// QTI_BEGIN: 2023-11-10: Telephony: Remove legacy subscription code
+// QTI_BEGIN: 2023-11-09: Telephony: Remove legacy subscription code
         log("User pref subId = " + userPrefDataSubId + " current dds " + defaultDataSubId
                 + " next active subId " + autoDefaultSubId + " smart dds enabled "
                 + isSmartDdsEnabled);
-// QTI_END: 2023-11-10: Telephony: Remove legacy subscription code
+// QTI_END: 2023-11-09: Telephony: Remove legacy subscription code
 
         if (hasData()) {
             // If earlier user selected DDS is now available, set that as DDS subId.
@@ -1358,12 +1358,12 @@ public class MultiSimSettingController extends Handler {
         }
 
         if (DBG) {
-// QTI_BEGIN: 2023-11-10: Telephony: Remove legacy subscription code
+// QTI_BEGIN: 2023-11-09: Telephony: Remove legacy subscription code
             log("updateUserPreferences: after dds = "
                     + mSubscriptionManagerService.getDefaultDataSubId() + " voice = "
                     + mSubscriptionManagerService.getDefaultVoiceSubId() + " sms = "
                     + mSubscriptionManagerService.getDefaultSmsSubId());
-// QTI_END: 2023-11-10: Telephony: Remove legacy subscription code
+// QTI_END: 2023-11-09: Telephony: Remove legacy subscription code
         }
     }
 

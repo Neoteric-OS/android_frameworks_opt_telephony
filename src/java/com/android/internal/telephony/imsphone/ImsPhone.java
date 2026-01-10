@@ -44,9 +44,9 @@ import static com.android.internal.telephony.CommandsInterface.CF_ACTION_ERASURE
 import static com.android.internal.telephony.CommandsInterface.CF_ACTION_REGISTRATION;
 import static com.android.internal.telephony.CommandsInterface.CF_REASON_ALL;
 import static com.android.internal.telephony.CommandsInterface.CF_REASON_ALL_CONDITIONAL;
-// QTI_BEGIN: 2021-10-14: Telephony: Support Call Forward Not Logged In
+// QTI_BEGIN: 2021-10-13: Telephony: Support Call Forward Not Logged In
 import static com.android.internal.telephony.CommandsInterface.CF_REASON_NOT_LOGGED_IN;
-// QTI_END: 2021-10-14: Telephony: Support Call Forward Not Logged In
+// QTI_END: 2021-10-13: Telephony: Support Call Forward Not Logged In
 import static com.android.internal.telephony.CommandsInterface.CF_REASON_BUSY;
 import static com.android.internal.telephony.CommandsInterface.CF_REASON_NOT_REACHABLE;
 import static com.android.internal.telephony.CommandsInterface.CF_REASON_NO_REPLY;
@@ -60,9 +60,9 @@ import static com.android.internal.telephony.CommandsInterface.SERVICE_CLASS_PAC
 // QTI_END: 2018-04-09: Telephony: IMS: Add UT interface to query CF setting for service class.
 import static com.android.internal.telephony.CommandsInterface.SERVICE_CLASS_VOICE;
 
-// QTI_BEGIN: 2020-05-22: Telephony: IMS: USSD over IMS
+// QTI_BEGIN: 2020-05-21: Telephony: IMS: USSD over IMS
 import android.annotation.NonNull;
-// QTI_END: 2020-05-22: Telephony: IMS: USSD over IMS
+// QTI_END: 2020-05-21: Telephony: IMS: USSD over IMS
 import android.app.Activity;
 import android.app.Notification;
 import android.app.NotificationManager;
@@ -71,9 +71,9 @@ import android.compat.annotation.UnsupportedAppUsage;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-// QTI_BEGIN: 2018-03-09: Telephony: IMS: RTT feature changes
+// QTI_BEGIN: 2018-03-08: Telephony: IMS: RTT feature changes
 import android.content.IntentFilter;
-// QTI_END: 2018-03-09: Telephony: IMS: RTT feature changes
+// QTI_END: 2018-03-08: Telephony: IMS: RTT feature changes
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.AsyncResult;
@@ -89,9 +89,7 @@ import android.os.RegistrantList;
 import android.os.ResultReceiver;
 import android.os.UserHandle;
 import android.preference.PreferenceManager;
-// QTI_BEGIN: 2023-06-06: Telephony: IMS: Fix the video state when answering via mmi command
 import android.telecom.VideoProfile;
-// QTI_END: 2023-06-06: Telephony: IMS: Fix the video state when answering via mmi command
 import android.telephony.AccessNetworkConstants;
 import android.telephony.CarrierConfigManager;
 import android.telephony.NetworkRegistrationInfo;
@@ -106,9 +104,9 @@ import android.telephony.ims.ImsCallProfile;
 import android.telephony.ims.ImsReasonInfo;
 import android.telephony.ims.ImsRegistrationAttributes;
 import android.telephony.ims.ImsSsData;
-// QTI_BEGIN: 2018-03-09: Telephony: IMS: RTT feature changes
+// QTI_BEGIN: 2018-03-08: Telephony: IMS: RTT feature changes
 import android.telephony.ims.ImsStreamMediaProfile;
-// QTI_END: 2018-03-09: Telephony: IMS: RTT feature changes
+// QTI_END: 2018-03-08: Telephony: IMS: RTT feature changes
 import android.telephony.ims.ImsSsInfo;
 import android.telephony.ims.RegistrationManager;
 import android.telephony.ims.feature.MmTelFeature;
@@ -117,9 +115,9 @@ import android.telephony.ims.stub.ImsUtImplBase;
 import android.text.TextUtils;
 import android.util.LocalLog;
 
-// QTI_BEGIN: 2018-03-09: Telephony: IMS: RTT feature changes
+// QTI_BEGIN: 2018-03-08: Telephony: IMS: RTT feature changes
 import com.android.ims.ImsCall;
-// QTI_END: 2018-03-09: Telephony: IMS: RTT feature changes
+// QTI_END: 2018-03-08: Telephony: IMS: RTT feature changes
 import com.android.ims.ImsEcbm;
 import com.android.ims.ImsEcbmStateListener;
 import com.android.ims.ImsException;
@@ -230,9 +228,7 @@ public class ImsPhone extends ImsPhoneBase {
                             .setRetryCallFailCause(((ImsDialArgs)dialArgs).retryCallFailCause)
                             .setRetryCallFailNetworkType(
                                     ((ImsDialArgs)dialArgs).retryCallFailNetworkType)
-// QTI_BEGIN: 2025-01-28: Telephony: Revert "DSDA Telephony Framework Changes"
                             .setIsWpsCall(((ImsDialArgs)dialArgs).isWpsCall);
-// QTI_END: 2025-01-28: Telephony: Revert "DSDA Telephony Framework Changes"
                 }
                 return new ImsDialArgs.Builder()
                         .setUusInfo(dialArgs.uusInfo)
@@ -330,10 +326,10 @@ public class ImsPhone extends ImsPhoneBase {
     // The roaming state if currently in service, or the last roaming state when was in service.
     private boolean mLastKnownRoamingState = false;
 
-// QTI_BEGIN: 2021-02-03: Telephony: IMS: Allow dial when UE is PS only attached
+// QTI_BEGIN: 2021-02-02: Telephony: IMS: Allow dial when UE is PS only attached
     private boolean mIsOutgoingImsVoiceAllowed = false;
 
-// QTI_END: 2021-02-03: Telephony: IMS: Allow dial when UE is PS only attached
+// QTI_END: 2021-02-02: Telephony: IMS: Allow dial when UE is PS only attached
     // List of Registrants to send supplementary service notifications to.
     private RegistrantList mSsnRegistrants = new RegistrantList();
 
@@ -524,13 +520,13 @@ public class ImsPhone extends ImsPhoneBase {
         mCT.registerPhoneStateListener(mExternalCallTracker);
         mExternalCallTracker.setCallPuller(mCT);
 
-// QTI_BEGIN: 2023-06-13: Telephony: Revert "Removed IWLAN legacy mode support"
+// QTI_BEGIN: 2023-06-12: Telephony: Revert "Removed IWLAN legacy mode support"
         boolean legacyMode = true;
         if (mDefaultPhone.getAccessNetworksManager() != null) {
             legacyMode = mDefaultPhone.getAccessNetworksManager().isInLegacyMode();
         }
         mSS.setOutOfService(legacyMode, false);
-// QTI_END: 2023-06-13: Telephony: Revert "Removed IWLAN legacy mode support"
+// QTI_END: 2023-06-12: Telephony: Revert "Removed IWLAN legacy mode support"
 
         mPhoneId = mDefaultPhone.getPhoneId();
 
@@ -757,10 +753,8 @@ public class ImsPhone extends ImsPhoneBase {
         } else if (getBackgroundCall().getState() != ImsPhoneCall.State.IDLE) {
             if (DBG) logd("MmiCode 0: hangupWaitingOrBackground");
             try {
-// QTI_BEGIN: 2025-01-28: Telephony: Revert "DSDA: Add support for MMI codes, adhoc conference"
                 mCT.hangup(getBackgroundCall());
             } catch (CallStateException e) {
-// QTI_END: 2025-01-28: Telephony: Revert "DSDA: Add support for MMI codes, adhoc conference"
                 if (DBG) Rlog.d(LOG_TAG, "hangup failed", e);
             }
         }
@@ -807,9 +801,7 @@ public class ImsPhone extends ImsPhoneBase {
     }
 
     private boolean handleCallWaitingIncallSupplementaryService(
-// QTI_BEGIN: 2025-01-28: Telephony: Revert "DSDA: Add support for MMI codes, adhoc conference"
             String dialString) {
-// QTI_END: 2025-01-28: Telephony: Revert "DSDA: Add support for MMI codes, adhoc conference"
         int len = dialString.length();
 
         if (len > 2) {
@@ -826,11 +818,9 @@ public class ImsPhone extends ImsPhoneBase {
                 if (call.getState() != ImsPhoneCall.State.IDLE) {
                     if (DBG) logd("MmiCode 1: hangup foreground");
                     mCT.hangup(call);
-// QTI_BEGIN: 2025-01-28: Telephony: Revert "DSDA: Add support for MMI codes, adhoc conference"
                 } else {
                     if (DBG) logd("MmiCode 1: holdActiveCallForWaitingCall");
                     mCT.holdActiveCallForWaitingCall();
-// QTI_END: 2025-01-28: Telephony: Revert "DSDA: Add support for MMI codes, adhoc conference"
                 }
             }
         } catch (CallStateException e) {
@@ -841,9 +831,7 @@ public class ImsPhone extends ImsPhoneBase {
         return true;
     }
 
-// QTI_BEGIN: 2025-01-28: Telephony: Revert "DSDA: Add support for MMI codes, adhoc conference"
     private boolean handleCallHoldIncallSupplementaryService(String dialString) {
-// QTI_END: 2025-01-28: Telephony: Revert "DSDA: Add support for MMI codes, adhoc conference"
         int len = dialString.length();
 
         if (len > 2) {
@@ -885,10 +873,8 @@ public class ImsPhone extends ImsPhoneBase {
         return true;
     }
 
-// QTI_BEGIN: 2025-01-28: Telephony: Revert "DSDA: Add support for MMI codes, adhoc conference"
     private boolean handleMultipartyIncallSupplementaryService(
             String dialString) {
-// QTI_END: 2025-01-28: Telephony: Revert "DSDA: Add support for MMI codes, adhoc conference"
         if (dialString.length() > 1) {
             return false;
         }
@@ -931,11 +917,9 @@ public class ImsPhone extends ImsPhoneBase {
         mSsnRegistrants.notifyRegistrants(ar);
     }
 
-// QTI_BEGIN: 2025-01-28: Telephony: Revert "DSDA: Add support for MMI codes, adhoc conference"
     @UnsupportedAppUsage(maxTargetSdk = Build.VERSION_CODES.R, trackingBug = 170729553)
     @Override
     public boolean handleInCallMmiCommands(String dialString) {
-// QTI_END: 2025-01-28: Telephony: Revert "DSDA: Add support for MMI codes, adhoc conference"
         if (!isInCall()) {
             return false;
         }
@@ -948,21 +932,15 @@ public class ImsPhone extends ImsPhoneBase {
         char ch = dialString.charAt(0);
         switch (ch) {
             case '0':
-// QTI_BEGIN: 2025-01-28: Telephony: Revert "DSDA: Add support for MMI codes, adhoc conference"
                 result = handleCallDeflectionIncallSupplementaryService(
                         dialString);
-// QTI_END: 2025-01-28: Telephony: Revert "DSDA: Add support for MMI codes, adhoc conference"
                 break;
             case '1':
-// QTI_BEGIN: 2025-01-28: Telephony: Revert "DSDA: Add support for MMI codes, adhoc conference"
                 result = handleCallWaitingIncallSupplementaryService(
                         dialString);
-// QTI_END: 2025-01-28: Telephony: Revert "DSDA: Add support for MMI codes, adhoc conference"
                 break;
             case '2':
-// QTI_BEGIN: 2025-01-28: Telephony: Revert "DSDA: Add support for MMI codes, adhoc conference"
                 result = handleCallHoldIncallSupplementaryService(dialString);
-// QTI_END: 2025-01-28: Telephony: Revert "DSDA: Add support for MMI codes, adhoc conference"
                 break;
             case '3':
                 result = handleMultipartyIncallSupplementaryService(dialString);
@@ -992,9 +970,9 @@ public class ImsPhone extends ImsPhoneBase {
 
     @Override
     public boolean isInImsEcm() {
-// QTI_BEGIN: 2021-06-24: Telephony: IMS: Update implementation of isInImsEcm API
+// QTI_BEGIN: 2021-06-23: Telephony: IMS: Update implementation of isInImsEcm API
         return EcbmHandler.getInstance().isInImsEcm();
-// QTI_END: 2021-06-24: Telephony: IMS: Update implementation of isInImsEcm API
+// QTI_END: 2021-06-23: Telephony: IMS: Update implementation of isInImsEcm API
     }
 
     public void notifyNewRingingConnection(Connection c) {
@@ -1048,22 +1026,18 @@ public class ImsPhone extends ImsPhoneBase {
         newDialString = PhoneNumberUtils.stripSeparators(dialString);
 // QTI_END: 2020-03-27: Telephony: Ims: Clean-up old ConfURI implementation
 
-// QTI_BEGIN: 2025-01-28: Telephony: Revert "DSDA: Add support for MMI codes, adhoc conference"
         // handle in-call MMI first if applicable
         if (handleInCallMmiCommands(newDialString)) {
             return null;
         }
 
-// QTI_END: 2025-01-28: Telephony: Revert "DSDA: Add support for MMI codes, adhoc conference"
         ImsDialArgs.Builder imsDialArgsBuilder;
         imsDialArgsBuilder = ImsDialArgs.Builder.from(dialArgs);
         // Get the CLIR info if needed
         imsDialArgsBuilder.setClirMode(mCT.getClirMode());
 
         if (mDefaultPhone.getPhoneType() == PhoneConstants.PHONE_TYPE_CDMA) {
-// QTI_BEGIN: 2025-01-28: Telephony: Revert "DSDA: Add support for MMI codes, adhoc conference"
             return mCT.dial(dialString, imsDialArgsBuilder.build());
-// QTI_END: 2025-01-28: Telephony: Revert "DSDA: Add support for MMI codes, adhoc conference"
         }
 
         if (mFeatureFlags.skipMmiCodeCheckForEmergencyCall()) {
@@ -1081,20 +1055,16 @@ public class ImsPhone extends ImsPhoneBase {
         if (DBG) logd("dialInternal: dialing w/ mmi '" + mmi + "'...");
 
         if (mmi == null) {
-// QTI_BEGIN: 2025-01-28: Telephony: Revert "DSDA: Add support for MMI codes, adhoc conference"
             return mCT.dial(dialString, imsDialArgsBuilder.build());
-// QTI_END: 2025-01-28: Telephony: Revert "DSDA: Add support for MMI codes, adhoc conference"
         } else if (mmi.isTemporaryModeCLIR()) {
             imsDialArgsBuilder.setClirMode(mmi.getCLIRMode());
-// QTI_BEGIN: 2018-03-23: Telephony: IMS: Fix dialing number with temporary clir
             return mCT.dial(mmi.getDialingNumber(), imsDialArgsBuilder.build());
-// QTI_END: 2018-03-23: Telephony: IMS: Fix dialing number with temporary clir
 // QTI_BEGIN: 2025-02-03: Telephony: Decouple Qualcomm value adds.
         } else if (!QtiImsUtils.isSystemUser()) {
 // QTI_END: 2025-02-03: Telephony: Decouple Qualcomm value adds.
-// QTI_BEGIN: 2023-12-20: Telephony: Guest-Mode FR: Add support for blocking SS in guest mode.
+// QTI_BEGIN: 2023-12-19: Telephony: Guest-Mode FR: Add support for blocking SS in guest mode.
             // Must be primary user to use supplementary service.
-// QTI_END: 2023-12-20: Telephony: Guest-Mode FR: Add support for blocking SS in guest mode.
+// QTI_END: 2023-12-19: Telephony: Guest-Mode FR: Add support for blocking SS in guest mode.
 // QTI_BEGIN: 2025-02-03: Telephony: Decouple Qualcomm value adds.
             QtiImsUtils.throwExceptionForSupplementaryService();
             return null;
@@ -1196,9 +1166,9 @@ public class ImsPhone extends ImsPhoneBase {
         case CF_REASON_NOT_REACHABLE:
         case CF_REASON_ALL:
         case CF_REASON_ALL_CONDITIONAL:
-// QTI_BEGIN: 2021-10-14: Telephony: Support Call Forward Not Logged In
+// QTI_BEGIN: 2021-10-13: Telephony: Support Call Forward Not Logged In
         case CF_REASON_NOT_LOGGED_IN:
-// QTI_END: 2021-10-14: Telephony: Support Call Forward Not Logged In
+// QTI_END: 2021-10-13: Telephony: Support Call Forward Not Logged In
             return true;
         default:
             return false;
@@ -1232,9 +1202,9 @@ public class ImsPhone extends ImsPhoneBase {
             case CF_REASON_NOT_REACHABLE: return ImsUtInterface.CDIV_CF_NOT_REACHABLE;
             case CF_REASON_ALL: return ImsUtInterface.CDIV_CF_ALL;
             case CF_REASON_ALL_CONDITIONAL: return ImsUtInterface.CDIV_CF_ALL_CONDITIONAL;
-// QTI_BEGIN: 2021-10-14: Telephony: Support Call Forward Not Logged In
+// QTI_BEGIN: 2021-10-13: Telephony: Support Call Forward Not Logged In
             case CF_REASON_NOT_LOGGED_IN: return ImsUtInterface.CDIV_CF_NOT_LOGGED_IN;
-// QTI_END: 2021-10-14: Telephony: Support Call Forward Not Logged In
+// QTI_END: 2021-10-13: Telephony: Support Call Forward Not Logged In
             default:
                 break;
         }
@@ -1250,9 +1220,9 @@ public class ImsPhone extends ImsPhoneBase {
             case ImsUtInterface.CDIV_CF_NOT_REACHABLE: return CF_REASON_NOT_REACHABLE;
             case ImsUtInterface.CDIV_CF_ALL: return CF_REASON_ALL;
             case ImsUtInterface.CDIV_CF_ALL_CONDITIONAL: return CF_REASON_ALL_CONDITIONAL;
-// QTI_BEGIN: 2021-10-14: Telephony: Support Call Forward Not Logged In
+// QTI_BEGIN: 2021-10-13: Telephony: Support Call Forward Not Logged In
             case ImsUtInterface.CDIV_CF_NOT_LOGGED_IN: return CF_REASON_NOT_LOGGED_IN;
-// QTI_END: 2021-10-14: Telephony: Support Call Forward Not Logged In
+// QTI_END: 2021-10-13: Telephony: Support Call Forward Not Logged In
             default:
                 break;
         }
@@ -1476,9 +1446,7 @@ public class ImsPhone extends ImsPhoneBase {
     }
 
     public void getCallBarring(String facility, Message onComplete) {
-// QTI_BEGIN: 2018-11-29: Telephony: IMS: Send voice service class by default
         getCallBarring(facility, onComplete, CommandsInterface.SERVICE_CLASS_VOICE);
-// QTI_END: 2018-11-29: Telephony: IMS: Send voice service class by default
     }
 
     public void getCallBarring(String facility, Message onComplete, int serviceClass) {
@@ -1505,9 +1473,7 @@ public class ImsPhone extends ImsPhoneBase {
     public void setCallBarring(String facility, boolean lockState, String password,
             Message onComplete) {
         setCallBarring(facility, lockState, password, onComplete,
-// QTI_BEGIN: 2018-11-29: Telephony: IMS: Send voice service class by default
                 CommandsInterface.SERVICE_CLASS_VOICE);
-// QTI_END: 2018-11-29: Telephony: IMS: Send voice service class by default
     }
 
     @Override
@@ -1685,7 +1651,7 @@ public class ImsPhone extends ImsPhoneBase {
         }
     }
 
-// QTI_BEGIN: 2020-05-22: Telephony: IMS: USSD over IMS
+// QTI_BEGIN: 2020-05-21: Telephony: IMS: USSD over IMS
     void onUssdComplete(ImsPhoneMmiCode mmi, @NonNull CommandException ex) {
         //Check if USSD CS fallback scenario and has valid pending MMI session.
         if (ex.getCommandError() == CommandException.Error.NO_NETWORK_FOUND &&
@@ -1703,7 +1669,7 @@ public class ImsPhone extends ImsPhoneBase {
         onMMIDone(mmi);
     }
 
-// QTI_END: 2020-05-22: Telephony: IMS: USSD over IMS
+// QTI_END: 2020-05-21: Telephony: IMS: USSD over IMS
     /**
      * Removes the given MMI from the pending list and notifies
      * registrants that it is complete.
@@ -1862,17 +1828,17 @@ public class ImsPhone extends ImsPhoneBase {
         return mDefaultPhone.getLine1Number();
     }
 
-// QTI_BEGIN: 2021-06-09: Telephony: IMS: Get local SIM phone number from IMS registration message
+// QTI_BEGIN: 2021-06-08: Telephony: IMS: Get local SIM phone number from IMS registration message
     @Override
     public String getSubscriberUriNumber() {
-// QTI_END: 2021-06-09: Telephony: IMS: Get local SIM phone number from IMS registration message
+// QTI_END: 2021-06-08: Telephony: IMS: Get local SIM phone number from IMS registration message
 // QTI_BEGIN: 2025-02-03: Telephony: Decouple Qualcomm value adds.
         return QtiImsUtils.getSubscriberUriNumber(mCurrentSubscriberUris);
 // QTI_END: 2025-02-03: Telephony: Decouple Qualcomm value adds.
-// QTI_BEGIN: 2021-06-09: Telephony: IMS: Get local SIM phone number from IMS registration message
+// QTI_BEGIN: 2021-06-08: Telephony: IMS: Get local SIM phone number from IMS registration message
     }
 
-// QTI_END: 2021-06-09: Telephony: IMS: Get local SIM phone number from IMS registration message
+// QTI_END: 2021-06-08: Telephony: IMS: Get local SIM phone number from IMS registration message
     /**
      * Used to Convert ImsCallForwardInfo[] to CallForwardInfo[].
      * Update received call forward status to default IccRecords.
@@ -2048,7 +2014,7 @@ public class ImsPhone extends ImsPhoneBase {
             case EVENT_SET_CALL_FORWARD_DONE:
                 if (ar.exception == null && ss != null &&
                     (ss.mCfReason == CF_REASON_UNCONDITIONAL)) {
-// QTI_BEGIN: 2023-03-07: Telephony: IMS: Update call forward indicator based on service class
+// QTI_BEGIN: 2023-03-06: Telephony: IMS: Update call forward indicator based on service class
                     if (ss.mServiceClass == (SERVICE_CLASS_DATA_SYNC + SERVICE_CLASS_PACKET)) {
                         setVideoCallForwardingPreference(isCfEnable(ss.mCfAction));
                         notifyCallForwardingIndicator();
@@ -2056,7 +2022,7 @@ public class ImsPhone extends ImsPhoneBase {
                         setVoiceCallForwardingFlag(getIccRecords(), 1, isCfEnable(ss.mCfAction),
                                                    ss.mDialingNumber);
                     }
-// QTI_END: 2023-03-07: Telephony: IMS: Update call forward indicator based on service class
+// QTI_END: 2023-03-06: Telephony: IMS: Update call forward indicator based on service class
                 }
                 if (ss != null) {
                     sendResponseOrRetryOnCsfbSs(ss, msg.what, ar.exception, null);
@@ -2446,13 +2412,13 @@ public class ImsPhone extends ImsPhoneBase {
         }
     }
 
-// QTI_BEGIN: 2021-02-03: Telephony: IMS: Allow dial when UE is PS only attached
+// QTI_BEGIN: 2021-02-02: Telephony: IMS: Allow dial when UE is PS only attached
     @Override
     public boolean isOutgoingImsVoiceAllowed() {
         return mIsOutgoingImsVoiceAllowed;
     }
 
-// QTI_END: 2021-02-03: Telephony: IMS: Allow dial when UE is PS only attached
+// QTI_END: 2021-02-02: Telephony: IMS: Allow dial when UE is PS only attached
     @UnsupportedAppUsage(maxTargetSdk = Build.VERSION_CODES.R, trackingBug = 170729553)
     @Override
     public boolean isUtEnabled() {
@@ -2484,9 +2450,9 @@ public class ImsPhone extends ImsPhoneBase {
     /**
      * Update roaming state and WFC mode in the following situations:
      *     1) voice is in service.
-// QTI_BEGIN: 2023-06-13: Telephony: Revert "Removed IWLAN legacy mode support"
+// QTI_BEGIN: 2023-06-12: Telephony: Revert "Removed IWLAN legacy mode support"
      *     2) data is in service and it is not IWLAN (if in legacy mode).
-// QTI_END: 2023-06-13: Telephony: Revert "Removed IWLAN legacy mode support"
+// QTI_END: 2023-06-12: Telephony: Revert "Removed IWLAN legacy mode support"
      * @param ss non-null ServiceState
      */
     private void updateRoamingState(ServiceState ss) {
@@ -2507,7 +2473,7 @@ public class ImsPhone extends ImsPhoneBase {
             logi("updateRoamingState: we are not IN_SERVICE, ignoring roaming change.");
             return;
         }
-// QTI_BEGIN: 2023-06-13: Telephony: Revert "Removed IWLAN legacy mode support"
+// QTI_BEGIN: 2023-06-12: Telephony: Revert "Removed IWLAN legacy mode support"
         // We ignore roaming changes when moving to IWLAN because it always sets the roaming
         // mode to home and masks the actual cellular roaming status if voice is not registered. If
         // we just moved to IWLAN because WFC roaming mode is IWLAN preferred and WFC home mode is
@@ -2517,7 +2483,7 @@ public class ImsPhone extends ImsPhoneBase {
             logi("updateRoamingState: IWLAN masking roaming, ignore roaming change.");
             return;
         }
-// QTI_END: 2023-06-13: Telephony: Revert "Removed IWLAN legacy mode support"
+// QTI_END: 2023-06-12: Telephony: Revert "Removed IWLAN legacy mode support"
         if (mCT.getState() == PhoneConstants.State.IDLE) {
             if (DBG) logd("updateRoamingState now: " + newRoamingState);
             if (!mFeatureFlags.updateRoamingStateToSetWfcMode()) {
@@ -2541,7 +2507,7 @@ public class ImsPhone extends ImsPhoneBase {
         }
     }
 
-// QTI_BEGIN: 2023-06-13: Telephony: Revert "Removed IWLAN legacy mode support"
+// QTI_BEGIN: 2023-06-12: Telephony: Revert "Removed IWLAN legacy mode support"
     /**
      * In legacy mode, data registration will report IWLAN when we are using WLAN for data,
      * effectively masking the true roaming state of the device if voice is not registered.
@@ -2566,7 +2532,7 @@ public class ImsPhone extends ImsPhoneBase {
                 && psInfo.getAccessNetworkTechnology() == TelephonyManager.NETWORK_TYPE_IWLAN;
     }
 
-// QTI_END: 2023-06-13: Telephony: Revert "Removed IWLAN legacy mode support"
+// QTI_END: 2023-06-12: Telephony: Revert "Removed IWLAN legacy mode support"
     public RegistrationManager.RegistrationCallback getImsMmTelRegistrationCallback() {
         return mImsMmTelRegistrationHelper.getCallback();
     }
@@ -2657,24 +2623,24 @@ public class ImsPhone extends ImsPhoneBase {
             /*
              * If lower layer passes extraCode with information that UE is
 // QTI_END: 2022-02-01: Telephony: IMS: Fix if outgoing Ims voice call is allowed
-// QTI_BEGIN: 2023-12-06: Telephony: Allow IMS dial when UE is PS attached
+// QTI_BEGIN: 2023-12-05: Telephony: Allow IMS dial when UE is PS attached
              * PS attached or not, we update mIsOutgoingImsVoiceAllowed
-// QTI_END: 2023-12-06: Telephony: Allow IMS dial when UE is PS attached
+// QTI_END: 2023-12-05: Telephony: Allow IMS dial when UE is PS attached
 // QTI_BEGIN: 2022-02-01: Telephony: IMS: Fix if outgoing Ims voice call is allowed
              * and return as we expect lower layer to invoke this function
              * again with updated ImsReasonInfo.
              */
 // QTI_END: 2022-02-01: Telephony: IMS: Fix if outgoing Ims voice call is allowed
-// QTI_BEGIN: 2023-12-06: Telephony: Allow IMS dial when UE is PS attached
+// QTI_BEGIN: 2023-12-05: Telephony: Allow IMS dial when UE is PS attached
             if (extraCode == QtiImsUtils.CODE_IS_PS_ATTACHED ||
                 extraCode == QtiImsUtils.CODE_IS_NOT_PS_ATTACHED) {
-// QTI_END: 2023-12-06: Telephony: Allow IMS dial when UE is PS attached
+// QTI_END: 2023-12-05: Telephony: Allow IMS dial when UE is PS attached
 // QTI_BEGIN: 2022-02-01: Telephony: IMS: Fix if outgoing Ims voice call is allowed
                 mIsOutgoingImsVoiceAllowed =
 // QTI_END: 2022-02-01: Telephony: IMS: Fix if outgoing Ims voice call is allowed
-// QTI_BEGIN: 2023-12-06: Telephony: Allow IMS dial when UE is PS attached
+// QTI_BEGIN: 2023-12-05: Telephony: Allow IMS dial when UE is PS attached
                         extraCode == QtiImsUtils.CODE_IS_PS_ATTACHED;
-// QTI_END: 2023-12-06: Telephony: Allow IMS dial when UE is PS attached
+// QTI_END: 2023-12-05: Telephony: Allow IMS dial when UE is PS attached
 // QTI_BEGIN: 2022-02-01: Telephony: IMS: Fix if outgoing Ims voice call is allowed
                 return;
             }
@@ -2721,16 +2687,16 @@ public class ImsPhone extends ImsPhoneBase {
 
         @Override
         public void handleImsSubscriberAssociatedUriChanged(Uri[] uris) {
-// QTI_BEGIN: 2022-04-27: Telephony: IMS: Clear mCurrentSubscriberUris when SIM is not active
+// QTI_BEGIN: 2022-04-26: Telephony: IMS: Clear mCurrentSubscriberUris when SIM is not active
             if (DBG) logd("handleImsSubscriberAssociatedUriChanged" + uris);
-// QTI_END: 2022-04-27: Telephony: IMS: Clear mCurrentSubscriberUris when SIM is not active
-// QTI_BEGIN: 2023-04-10: Telephony: Fix data call set-up issue
+// QTI_END: 2022-04-26: Telephony: IMS: Clear mCurrentSubscriberUris when SIM is not active
+// QTI_BEGIN: 2023-04-09: Telephony: Fix data call set-up issue
             if (uris == null && isActiveSubId(getSubId())) {
-// QTI_END: 2023-04-10: Telephony: Fix data call set-up issue
-// QTI_BEGIN: 2022-04-27: Telephony: IMS: Clear mCurrentSubscriberUris when SIM is not active
+// QTI_END: 2023-04-09: Telephony: Fix data call set-up issue
+// QTI_BEGIN: 2022-04-26: Telephony: IMS: Clear mCurrentSubscriberUris when SIM is not active
                 return;
             }
-// QTI_END: 2022-04-27: Telephony: IMS: Clear mCurrentSubscriberUris when SIM is not active
+// QTI_END: 2022-04-26: Telephony: IMS: Clear mCurrentSubscriberUris when SIM is not active
             setCurrentSubscriberUris(uris);
             setPhoneNumberForSourceIms(uris);
         }
@@ -2754,16 +2720,16 @@ public class ImsPhone extends ImsPhoneBase {
         int subId = getSubId();
         if (!SubscriptionManager.isValidSubscriptionId(subId)) {
             // Defending b/219080264:
-// QTI_BEGIN: 2023-11-10: Telephony: Remove legacy subscription code
+// QTI_BEGIN: 2023-11-09: Telephony: Remove legacy subscription code
             // SubscriptionManagerService.setSubscriptionProperty validates input subId
-// QTI_END: 2023-11-10: Telephony: Remove legacy subscription code
+// QTI_END: 2023-11-09: Telephony: Remove legacy subscription code
             // so do not proceed if subId invalid. This may be happening because cached
             // IMS callbacks are sent back to telephony after SIM state changed.
             return;
         }
 
         String phoneNumber = extractPhoneNumberFromAssociatedUris(uris, /*isGlobalFormat*/true);
-// QTI_BEGIN: 2023-11-10: Telephony: Remove legacy subscription code
+// QTI_BEGIN: 2023-11-09: Telephony: Remove legacy subscription code
 
         SubscriptionInfoInternal subInfo = mSubscriptionManagerService
                 .getSubscriptionInfoInternal(subId);
@@ -2774,28 +2740,28 @@ public class ImsPhone extends ImsPhoneBase {
             phoneNumber = PhoneNumberUtils.formatNumberToE164(phoneNumber,
                     subInfo.getCountryIso());
             if (phoneNumber == null) {
-// QTI_END: 2023-11-10: Telephony: Remove legacy subscription code
+// QTI_END: 2023-11-09: Telephony: Remove legacy subscription code
                 return;
             }
-// QTI_BEGIN: 2023-11-10: Telephony: Remove legacy subscription code
+// QTI_BEGIN: 2023-11-09: Telephony: Remove legacy subscription code
             mSubscriptionManagerService.setNumberFromIms(subId, phoneNumber);
         } else if (isAllowNonGlobalNumberFormat()) {
             // If carrier config has true for KEY_IGNORE_GLOBAL_PHONE_NUMBER_FORMAT_BOOL and
             // P-Associated-Uri does not have global number,
             // try to find phone number excluding '+' one more time.
             phoneNumber = extractPhoneNumberFromAssociatedUris(uris, /*isGlobalFormat*/false);
-// QTI_END: 2023-11-10: Telephony: Remove legacy subscription code
+// QTI_END: 2023-11-09: Telephony: Remove legacy subscription code
             if (phoneNumber == null) {
-// QTI_BEGIN: 2023-11-10: Telephony: Remove legacy subscription code
+// QTI_BEGIN: 2023-11-09: Telephony: Remove legacy subscription code
                 loge("extract phone number without '+' failed");
-// QTI_END: 2023-11-10: Telephony: Remove legacy subscription code
+// QTI_END: 2023-11-09: Telephony: Remove legacy subscription code
                 return;
             }
-// QTI_BEGIN: 2023-11-10: Telephony: Remove legacy subscription code
+// QTI_BEGIN: 2023-11-09: Telephony: Remove legacy subscription code
             mSubscriptionManagerService.setNumberFromIms(subId, phoneNumber);
         } else {
             logd("extract phone number failed");
-// QTI_END: 2023-11-10: Telephony: Remove legacy subscription code
+// QTI_END: 2023-11-09: Telephony: Remove legacy subscription code
         }
     }
 

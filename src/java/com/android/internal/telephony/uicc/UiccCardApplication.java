@@ -1,3 +1,4 @@
+// QTI_BEGIN: 2012-09-07: Telephony: Remove CdmaLteUicc objects
 /*
  * Copyright (C) 2006, 2012 The Android Open Source Project
  *
@@ -14,17 +15,22 @@
  * limitations under the License.
  */
 
+// QTI_END: 2012-09-07: Telephony: Remove CdmaLteUicc objects
 package com.android.internal.telephony.uicc;
 
 import android.annotation.NonNull;
 import android.compat.annotation.UnsupportedAppUsage;
+// QTI_BEGIN: 2012-09-07: Telephony: Remove CdmaLteUicc objects
 import android.content.Context;
 import android.os.AsyncResult;
+// QTI_END: 2012-09-07: Telephony: Remove CdmaLteUicc objects
 import android.os.Build;
+// QTI_BEGIN: 2012-09-07: Telephony: Remove CdmaLteUicc objects
 import android.os.Handler;
 import android.os.Message;
 import android.os.Registrant;
 import android.os.RegistrantList;
+// QTI_END: 2012-09-07: Telephony: Remove CdmaLteUicc objects
 import android.util.IndentingPrintWriter;
 
 import com.android.internal.telephony.CommandException;
@@ -40,13 +46,17 @@ import com.android.telephony.Rlog;
 import java.io.FileDescriptor;
 import java.io.PrintWriter;
 
+// QTI_BEGIN: 2012-09-07: Telephony: Remove CdmaLteUicc objects
 /**
  * {@hide}
  */
 public class UiccCardApplication {
+// QTI_END: 2012-09-07: Telephony: Remove CdmaLteUicc objects
     private static final String LOG_TAG = "UiccCardApplication";
+// QTI_BEGIN: 2012-09-07: Telephony: Remove CdmaLteUicc objects
     private static final boolean DBG = true;
 
+// QTI_END: 2012-09-07: Telephony: Remove CdmaLteUicc objects
     private static final int EVENT_PIN1_PUK1_DONE = 1;
     private static final int EVENT_CHANGE_PIN1_DONE = 2;
     private static final int EVENT_CHANGE_PIN2_DONE = 3;
@@ -68,64 +78,91 @@ public class UiccCardApplication {
     public static final int AUTH_CONTEXT_UNDEFINED = PhoneConstants.AUTH_CONTEXT_UNDEFINED;
 
     @UnsupportedAppUsage(maxTargetSdk = Build.VERSION_CODES.R, trackingBug = 170729553)
+// QTI_BEGIN: 2012-09-07: Telephony: Remove CdmaLteUicc objects
     private final Object  mLock = new Object();
+// QTI_END: 2012-09-07: Telephony: Remove CdmaLteUicc objects
     private UiccProfile   mUiccProfile; //parent
     @UnsupportedAppUsage(maxTargetSdk = Build.VERSION_CODES.R, trackingBug = 170729553)
+// QTI_BEGIN: 2012-09-07: Telephony: Remove CdmaLteUicc objects
     private AppState      mAppState;
+// QTI_END: 2012-09-07: Telephony: Remove CdmaLteUicc objects
     @UnsupportedAppUsage(maxTargetSdk = Build.VERSION_CODES.R, trackingBug = 170729553)
+// QTI_BEGIN: 2012-09-07: Telephony: Remove CdmaLteUicc objects
     private AppType       mAppType;
+// QTI_END: 2012-09-07: Telephony: Remove CdmaLteUicc objects
     private int           mAuthContext;
     @UnsupportedAppUsage(maxTargetSdk = Build.VERSION_CODES.R, trackingBug = 170729553)
+// QTI_BEGIN: 2012-09-07: Telephony: Remove CdmaLteUicc objects
     private PersoSubState mPersoSubState;
+// QTI_END: 2012-09-07: Telephony: Remove CdmaLteUicc objects
     @UnsupportedAppUsage(maxTargetSdk = Build.VERSION_CODES.R, trackingBug = 170729553)
+// QTI_BEGIN: 2012-09-07: Telephony: Remove CdmaLteUicc objects
     private String        mAid;
     private String        mAppLabel;
     private boolean       mPin1Replaced;
+// QTI_END: 2012-09-07: Telephony: Remove CdmaLteUicc objects
     @UnsupportedAppUsage(maxTargetSdk = Build.VERSION_CODES.R, trackingBug = 170729553)
+// QTI_BEGIN: 2012-09-07: Telephony: Remove CdmaLteUicc objects
     private PinState      mPin1State;
     private PinState      mPin2State;
     private boolean       mIccFdnEnabled;
     private boolean       mDesiredFdnEnabled;
     private boolean       mIccLockEnabled;
     private boolean       mDesiredPinLocked;
+// QTI_END: 2012-09-07: Telephony: Remove CdmaLteUicc objects
 
     // App state will be ignored while deciding whether the card is ready or not.
     private boolean       mIgnoreApp;
     private boolean       mIccFdnAvailable = true; // Default is enabled.
 
     @UnsupportedAppUsage(maxTargetSdk = Build.VERSION_CODES.R, trackingBug = 170729553)
+// QTI_BEGIN: 2012-09-07: Telephony: Remove CdmaLteUicc objects
     private CommandsInterface mCi;
     private Context mContext;
     private IccRecords mIccRecords;
     private IccFileHandler mIccFh;
 
+// QTI_END: 2012-09-07: Telephony: Remove CdmaLteUicc objects
     @UnsupportedAppUsage(maxTargetSdk = Build.VERSION_CODES.R, trackingBug = 170729553)
+// QTI_BEGIN: 2012-09-07: Telephony: Remove CdmaLteUicc objects
     private boolean mDestroyed;//set to true once this App is commanded to be disposed of.
 
     private RegistrantList mReadyRegistrants = new RegistrantList();
+// QTI_END: 2012-09-07: Telephony: Remove CdmaLteUicc objects
     private RegistrantList mDetectedRegistrants = new RegistrantList();
+// QTI_BEGIN: 2012-09-07: Telephony: Remove CdmaLteUicc objects
     private RegistrantList mPinLockedRegistrants = new RegistrantList();
     private RegistrantList mNetworkLockedRegistrants = new RegistrantList();
 
+// QTI_END: 2012-09-07: Telephony: Remove CdmaLteUicc objects
     @NonNull
     private final FeatureFlags mFeatureFlags;
 
     public UiccCardApplication(@NonNull UiccProfile uiccProfile,
             @NonNull IccCardApplicationStatus as, @NonNull Context c, @NonNull CommandsInterface ci,
             @NonNull FeatureFlags flags) {
+// QTI_BEGIN: 2012-09-07: Telephony: Remove CdmaLteUicc objects
         if (DBG) log("Creating UiccApp: " + as);
+// QTI_END: 2012-09-07: Telephony: Remove CdmaLteUicc objects
         mFeatureFlags = flags;
         mUiccProfile = uiccProfile;
+// QTI_BEGIN: 2012-09-07: Telephony: Remove CdmaLteUicc objects
         mAppState = as.app_state;
         mAppType = as.app_type;
+// QTI_END: 2012-09-07: Telephony: Remove CdmaLteUicc objects
         mAuthContext = getAuthContext(mAppType);
+// QTI_BEGIN: 2012-09-07: Telephony: Remove CdmaLteUicc objects
         mPersoSubState = as.perso_substate;
         mAid = as.aid;
         mAppLabel = as.app_label;
+// QTI_END: 2012-09-07: Telephony: Remove CdmaLteUicc objects
         mPin1Replaced = as.pin1_replaced;
+// QTI_BEGIN: 2012-09-07: Telephony: Remove CdmaLteUicc objects
         mPin1State = as.pin1;
         mPin2State = as.pin2;
+// QTI_END: 2012-09-07: Telephony: Remove CdmaLteUicc objects
         mIgnoreApp = false;
+// QTI_BEGIN: 2012-09-07: Telephony: Remove CdmaLteUicc objects
 
         mContext = c;
         mCi = ci;
@@ -136,11 +173,15 @@ public class UiccCardApplication {
             queryFdn();
             queryPin1State();
         }
+// QTI_END: 2012-09-07: Telephony: Remove CdmaLteUicc objects
         mCi.registerForNotAvailable(mHandler, EVENT_RADIO_UNAVAILABLE, null);
+// QTI_BEGIN: 2012-09-07: Telephony: Remove CdmaLteUicc objects
     }
 
+// QTI_END: 2012-09-07: Telephony: Remove CdmaLteUicc objects
     @UnsupportedAppUsage(maxTargetSdk = Build.VERSION_CODES.R, trackingBug = 170729553)
     public void update (IccCardApplicationStatus as, Context c, CommandsInterface ci) {
+// QTI_BEGIN: 2012-09-07: Telephony: Remove CdmaLteUicc objects
         synchronized (mLock) {
             if (mDestroyed) {
                 loge("Application updated after destroyed! Fix me!");
@@ -153,26 +194,36 @@ public class UiccCardApplication {
             AppType oldAppType = mAppType;
             AppState oldAppState = mAppState;
             PersoSubState oldPersoSubState = mPersoSubState;
+// QTI_END: 2012-09-07: Telephony: Remove CdmaLteUicc objects
             PinState oldPin1State = mPin1State;
+// QTI_BEGIN: 2012-09-07: Telephony: Remove CdmaLteUicc objects
             mAppType = as.app_type;
+// QTI_END: 2012-09-07: Telephony: Remove CdmaLteUicc objects
             mAuthContext = getAuthContext(mAppType);
+// QTI_BEGIN: 2012-09-07: Telephony: Remove CdmaLteUicc objects
             mAppState = as.app_state;
             mPersoSubState = as.perso_substate;
             mAid = as.aid;
             mAppLabel = as.app_label;
+// QTI_END: 2012-09-07: Telephony: Remove CdmaLteUicc objects
             mPin1Replaced = as.pin1_replaced;
+// QTI_BEGIN: 2012-09-07: Telephony: Remove CdmaLteUicc objects
             mPin1State = as.pin1;
             mPin2State = as.pin2;
 
             if (mAppType != oldAppType) {
+// QTI_END: 2012-09-07: Telephony: Remove CdmaLteUicc objects
                 if (mIccFh != null) { mIccFh.dispose();}
                 if (mIccRecords != null) { mIccRecords.dispose();}
+// QTI_BEGIN: 2012-09-07: Telephony: Remove CdmaLteUicc objects
                 mIccFh = createIccFileHandler(as.app_type);
                 mIccRecords = createIccRecords(as.app_type, c, ci);
             }
 
             if (mPersoSubState != oldPersoSubState &&
+// QTI_END: 2012-09-07: Telephony: Remove CdmaLteUicc objects
                     PersoSubState.isPersoLocked(mPersoSubState)) {
+// QTI_BEGIN: 2012-09-07: Telephony: Remove CdmaLteUicc objects
                 notifyNetworkLockedRegistrantsIfNeeded(null);
             }
 
@@ -186,15 +237,19 @@ public class UiccCardApplication {
                 }
                 notifyPinLockedRegistrantsIfNeeded(null);
                 notifyReadyRegistrantsIfNeeded(null);
+// QTI_END: 2012-09-07: Telephony: Remove CdmaLteUicc objects
                 notifyDetectedRegistrantsIfNeeded(null);
             } else {
                 if (mPin1State != oldPin1State)
                     queryPin1State();
+// QTI_BEGIN: 2012-09-07: Telephony: Remove CdmaLteUicc objects
             }
         }
     }
 
+// QTI_END: 2012-09-07: Telephony: Remove CdmaLteUicc objects
     @UnsupportedAppUsage(maxTargetSdk = Build.VERSION_CODES.R, trackingBug = 170729553)
+// QTI_BEGIN: 2012-09-07: Telephony: Remove CdmaLteUicc objects
     void dispose() {
         synchronized (mLock) {
             if (DBG) log(mAppType + " being Disposed");
@@ -203,7 +258,9 @@ public class UiccCardApplication {
             if (mIccFh != null) { mIccFh.dispose();}
             mIccRecords = null;
             mIccFh = null;
+// QTI_END: 2012-09-07: Telephony: Remove CdmaLteUicc objects
             mCi.unregisterForNotAvailable(mHandler);
+// QTI_BEGIN: 2012-09-07: Telephony: Remove CdmaLteUicc objects
         }
     }
 
@@ -213,7 +270,9 @@ public class UiccCardApplication {
         } else if (type == AppType.APPTYPE_RUIM || type == AppType.APPTYPE_CSIM){
             return new RuimRecords(this, c, ci);
         } else if (type == AppType.APPTYPE_ISIM) {
+// QTI_END: 2012-09-07: Telephony: Remove CdmaLteUicc objects
             return new IsimUiccRecords(this, c, ci, mFeatureFlags);
+// QTI_BEGIN: 2012-09-07: Telephony: Remove CdmaLteUicc objects
         } else {
             // Unknown app type (maybe detection is still in progress)
             return null;
@@ -238,7 +297,9 @@ public class UiccCardApplication {
     }
 
     /** Assumes mLock is held. */
+// QTI_END: 2012-09-07: Telephony: Remove CdmaLteUicc objects
     public void queryFdn() {
+// QTI_BEGIN: 2012-09-07: Telephony: Remove CdmaLteUicc objects
         //This shouldn't change run-time. So needs to be called only once.
         int serviceClassX;
 
@@ -260,6 +321,7 @@ public class UiccCardApplication {
                 return;
             }
 
+// QTI_END: 2012-09-07: Telephony: Remove CdmaLteUicc objects
             int[] result = (int[])ar.result;
             if(result.length != 0) {
                 //0 - Available & Disabled, 1-Available & Enabled, 2-Unavailable.
@@ -272,29 +334,38 @@ public class UiccCardApplication {
                 }
                 log("Query facility FDN : FDN service available: "+ mIccFdnAvailable
                         +" enabled: "  + mIccFdnEnabled);
+// QTI_BEGIN: 2012-09-07: Telephony: Remove CdmaLteUicc objects
             } else {
                 loge("Bogus facility lock response");
             }
+// QTI_END: 2012-09-07: Telephony: Remove CdmaLteUicc objects
             if (mIccFdnEnabled && mIccFdnAvailable) {
                 mIccRecords.loadFdnRecords();
             }
+// QTI_BEGIN: 2012-09-07: Telephony: Remove CdmaLteUicc objects
         }
     }
 
     private void onChangeFdnDone(AsyncResult ar) {
         synchronized (mLock) {
+// QTI_END: 2012-09-07: Telephony: Remove CdmaLteUicc objects
             int attemptsRemaining = -1;
 
+// QTI_BEGIN: 2012-09-07: Telephony: Remove CdmaLteUicc objects
             if (ar.exception == null) {
                 mIccFdnEnabled = mDesiredFdnEnabled;
                 if (DBG) log("EVENT_CHANGE_FACILITY_FDN_DONE: " +
                         "mIccFdnEnabled=" + mIccFdnEnabled);
             } else {
+// QTI_END: 2012-09-07: Telephony: Remove CdmaLteUicc objects
                 attemptsRemaining = parsePinPukErrorResult(ar);
+// QTI_BEGIN: 2012-09-07: Telephony: Remove CdmaLteUicc objects
                 loge("Error change facility fdn with exception " + ar.exception);
             }
             Message response = (Message)ar.userObj;
+// QTI_END: 2012-09-07: Telephony: Remove CdmaLteUicc objects
             response.arg1 = attemptsRemaining;
+// QTI_BEGIN: 2012-09-07: Telephony: Remove CdmaLteUicc objects
             AsyncResult.forMessage(response).exception = ar.exception;
             response.sendToTarget();
         }
@@ -324,7 +395,9 @@ public class UiccCardApplication {
 
                 mIccLockEnabled = (ints[0] != 0);
 
+// QTI_END: 2012-09-07: Telephony: Remove CdmaLteUicc objects
                 // Correctness check: we expect mPin1State to match mIccLockEnabled.
+// QTI_BEGIN: 2012-09-07: Telephony: Remove CdmaLteUicc objects
                 // When mPin1State is DISABLED mIccLockEanbled should be false.
                 // When mPin1State is ENABLED mIccLockEnabled should be true.
                 //
@@ -345,10 +418,12 @@ public class UiccCardApplication {
                             loge("QUERY_FACILITY_LOCK:disabled GET_SIM_STATUS.Pin1:enabled."
                                     + " Fixme");
                         }
+// QTI_END: 2012-09-07: Telephony: Remove CdmaLteUicc objects
                     case PINSTATE_UNKNOWN:
                     default:
                         if (DBG) log("Ignoring: pin1state=" + mPin1State);
                         break;
+// QTI_BEGIN: 2012-09-07: Telephony: Remove CdmaLteUicc objects
                 }
             } else {
                 loge("Bogus facility lock response");
@@ -359,16 +434,21 @@ public class UiccCardApplication {
     /** REMOVE when mIccLockEnabled is not needed */
     private void onChangeFacilityLock(AsyncResult ar) {
         synchronized (mLock) {
+// QTI_END: 2012-09-07: Telephony: Remove CdmaLteUicc objects
             int attemptsRemaining = -1;
 
+// QTI_BEGIN: 2012-09-07: Telephony: Remove CdmaLteUicc objects
             if (ar.exception == null) {
                 mIccLockEnabled = mDesiredPinLocked;
                 if (DBG) log( "EVENT_CHANGE_FACILITY_LOCK_DONE: mIccLockEnabled= "
                         + mIccLockEnabled);
             } else {
+// QTI_END: 2012-09-07: Telephony: Remove CdmaLteUicc objects
                 attemptsRemaining = parsePinPukErrorResult(ar);
+// QTI_BEGIN: 2012-09-07: Telephony: Remove CdmaLteUicc objects
                 loge("Error change facility lock with exception " + ar.exception);
             }
+// QTI_END: 2012-09-07: Telephony: Remove CdmaLteUicc objects
             Message response = (Message)ar.userObj;
             AsyncResult.forMessage(response).exception = ar.exception;
             response.arg1 = attemptsRemaining;
@@ -391,6 +471,7 @@ public class UiccCardApplication {
             }
             log("parsePinPukErrorResult: attemptsRemaining=" + attemptsRemaining);
             return attemptsRemaining;
+// QTI_BEGIN: 2012-09-07: Telephony: Remove CdmaLteUicc objects
         }
     }
 
@@ -402,6 +483,7 @@ public class UiccCardApplication {
             if (mDestroyed) {
                 loge("Received message " + msg + "[" + msg.what
                         + "] while being destroyed. Ignoring.");
+// QTI_END: 2012-09-07: Telephony: Remove CdmaLteUicc objects
                 //When UiccCardApp dispose,unlock SIM PIN message and need return exception.
                 if (msg.what == EVENT_PIN1_PUK1_DONE) {
                     ar = (AsyncResult) msg.obj;
@@ -414,10 +496,12 @@ public class UiccCardApplication {
                         }
                     }
                 }
+// QTI_BEGIN: 2012-09-07: Telephony: Remove CdmaLteUicc objects
                 return;
             }
 
             switch (msg.what) {
+// QTI_END: 2012-09-07: Telephony: Remove CdmaLteUicc objects
                 case EVENT_PIN1_PUK1_DONE:
                 case EVENT_PIN2_PUK2_DONE:
                 case EVENT_CHANGE_PIN1_DONE:
@@ -431,6 +515,7 @@ public class UiccCardApplication {
                     response.arg1 = attemptsRemaining;
                     response.sendToTarget();
                     break;
+// QTI_BEGIN: 2012-09-07: Telephony: Remove CdmaLteUicc objects
                 case EVENT_QUERY_FACILITY_FDN_DONE:
                     ar = (AsyncResult)msg.obj;
                     onQueryFdnEnabled(ar);
@@ -447,17 +532,21 @@ public class UiccCardApplication {
                     ar = (AsyncResult)msg.obj;
                     onChangeFacilityLock(ar);
                     break;
+// QTI_END: 2012-09-07: Telephony: Remove CdmaLteUicc objects
                 case EVENT_RADIO_UNAVAILABLE:
                     if (DBG) log("handleMessage (EVENT_RADIO_UNAVAILABLE)");
                     mAppState = AppState.APPSTATE_UNKNOWN;
                     break;
+// QTI_BEGIN: 2012-09-07: Telephony: Remove CdmaLteUicc objects
                 default:
                     loge("Unknown Event " + msg.what);
             }
         }
     };
 
+// QTI_END: 2012-09-07: Telephony: Remove CdmaLteUicc objects
     @UnsupportedAppUsage(maxTargetSdk = Build.VERSION_CODES.R, trackingBug = 170729553)
+// QTI_BEGIN: 2012-09-07: Telephony: Remove CdmaLteUicc objects
     public void registerForReady(Handler h, int what, Object obj) {
         synchronized (mLock) {
             Registrant r = new Registrant (h, what, obj);
@@ -466,13 +555,16 @@ public class UiccCardApplication {
         }
     }
 
+// QTI_END: 2012-09-07: Telephony: Remove CdmaLteUicc objects
     @UnsupportedAppUsage
+// QTI_BEGIN: 2012-09-07: Telephony: Remove CdmaLteUicc objects
     public void unregisterForReady(Handler h) {
         synchronized (mLock) {
             mReadyRegistrants.remove(h);
         }
     }
 
+// QTI_END: 2012-09-07: Telephony: Remove CdmaLteUicc objects
     public void registerForDetected(Handler h, int what, Object obj) {
         synchronized (mLock) {
             Registrant r = new Registrant(h, what, obj);
@@ -487,10 +579,13 @@ public class UiccCardApplication {
         }
     }
 
+// QTI_BEGIN: 2012-09-07: Telephony: Remove CdmaLteUicc objects
     /**
      * Notifies handler of any transition into State.isPinLocked()
      */
+// QTI_END: 2012-09-07: Telephony: Remove CdmaLteUicc objects
     protected void registerForLocked(Handler h, int what, Object obj) {
+// QTI_BEGIN: 2012-09-07: Telephony: Remove CdmaLteUicc objects
         synchronized (mLock) {
             Registrant r = new Registrant (h, what, obj);
             mPinLockedRegistrants.add(r);
@@ -498,7 +593,9 @@ public class UiccCardApplication {
         }
     }
 
+// QTI_END: 2012-09-07: Telephony: Remove CdmaLteUicc objects
     protected void unregisterForLocked(Handler h) {
+// QTI_BEGIN: 2012-09-07: Telephony: Remove CdmaLteUicc objects
         synchronized (mLock) {
             mPinLockedRegistrants.remove(h);
         }
@@ -507,7 +604,9 @@ public class UiccCardApplication {
     /**
      * Notifies handler of any transition into State.NETWORK_LOCKED
      */
+// QTI_END: 2012-09-07: Telephony: Remove CdmaLteUicc objects
     protected void registerForNetworkLocked(Handler h, int what, Object obj) {
+// QTI_BEGIN: 2012-09-07: Telephony: Remove CdmaLteUicc objects
         synchronized (mLock) {
             Registrant r = new Registrant (h, what, obj);
             mNetworkLockedRegistrants.add(r);
@@ -515,7 +614,9 @@ public class UiccCardApplication {
         }
     }
 
+// QTI_END: 2012-09-07: Telephony: Remove CdmaLteUicc objects
     protected void unregisterForNetworkLocked(Handler h) {
+// QTI_BEGIN: 2012-09-07: Telephony: Remove CdmaLteUicc objects
         synchronized (mLock) {
             mNetworkLockedRegistrants.remove(h);
         }
@@ -535,7 +636,9 @@ public class UiccCardApplication {
                     mPin1State == PinState.PINSTATE_ENABLED_BLOCKED ||
                     mPin1State == PinState.PINSTATE_ENABLED_PERM_BLOCKED) {
                 loge("Sanity check failed! APPSTATE is ready while PIN1 is not verified!!!");
+// QTI_END: 2012-09-07: Telephony: Remove CdmaLteUicc objects
                 // Don't notify if application is in an invalid state
+// QTI_BEGIN: 2012-09-07: Telephony: Remove CdmaLteUicc objects
                 return;
             }
             if (r == null) {
@@ -548,6 +651,7 @@ public class UiccCardApplication {
         }
     }
 
+// QTI_END: 2012-09-07: Telephony: Remove CdmaLteUicc objects
     /**
      * Notifies specified registrant, assume mLock is held.
      *
@@ -568,6 +672,7 @@ public class UiccCardApplication {
         }
     }
 
+// QTI_BEGIN: 2012-09-07: Telephony: Remove CdmaLteUicc objects
     /**
      * Notifies specified registrant, assume mLock is held.
      *
@@ -583,7 +688,9 @@ public class UiccCardApplication {
             if (mPin1State == PinState.PINSTATE_ENABLED_VERIFIED ||
                     mPin1State == PinState.PINSTATE_DISABLED) {
                 loge("Sanity check failed! APPSTATE is locked while PIN1 is not!!!");
+// QTI_END: 2012-09-07: Telephony: Remove CdmaLteUicc objects
                 //Don't notify if application is in an invalid state
+// QTI_BEGIN: 2012-09-07: Telephony: Remove CdmaLteUicc objects
                 return;
             }
             if (r == null) {
@@ -607,32 +714,43 @@ public class UiccCardApplication {
         }
 
         if (mAppState == AppState.APPSTATE_SUBSCRIPTION_PERSO &&
+// QTI_END: 2012-09-07: Telephony: Remove CdmaLteUicc objects
                 PersoSubState.isPersoLocked(mPersoSubState)) {
             AsyncResult ar = new AsyncResult(null, mPersoSubState.ordinal(), null);
+// QTI_BEGIN: 2012-09-07: Telephony: Remove CdmaLteUicc objects
             if (r == null) {
+// QTI_END: 2012-09-07: Telephony: Remove CdmaLteUicc objects
                 if (DBG) log("Notifying registrants: NETWORK_LOCKED with mPersoSubState" + mPersoSubState);
                 mNetworkLockedRegistrants.notifyRegistrants(ar);
+// QTI_BEGIN: 2012-09-07: Telephony: Remove CdmaLteUicc objects
             } else {
+// QTI_END: 2012-09-07: Telephony: Remove CdmaLteUicc objects
                 if (DBG) log("Notifying 1 registrant: NETWORK_LOCKED with mPersoSubState" + mPersoSubState);
                 r.notifyRegistrant(ar);
+// QTI_BEGIN: 2012-09-07: Telephony: Remove CdmaLteUicc objects
             }
         }
     }
 
+// QTI_END: 2012-09-07: Telephony: Remove CdmaLteUicc objects
     @UnsupportedAppUsage
+// QTI_BEGIN: 2012-09-07: Telephony: Remove CdmaLteUicc objects
     public AppState getState() {
         synchronized (mLock) {
             return mAppState;
         }
     }
 
+// QTI_END: 2012-09-07: Telephony: Remove CdmaLteUicc objects
     @UnsupportedAppUsage
+// QTI_BEGIN: 2012-09-07: Telephony: Remove CdmaLteUicc objects
     public AppType getType() {
         synchronized (mLock) {
             return mAppType;
         }
     }
 
+// QTI_END: 2012-09-07: Telephony: Remove CdmaLteUicc objects
     @UnsupportedAppUsage(maxTargetSdk = Build.VERSION_CODES.R, trackingBug = 170729553)
     public int getAuthContext() {
         synchronized (mLock) {
@@ -668,41 +786,52 @@ public class UiccCardApplication {
     }
 
     @UnsupportedAppUsage(maxTargetSdk = Build.VERSION_CODES.R, trackingBug = 170729553)
+// QTI_BEGIN: 2012-09-07: Telephony: Remove CdmaLteUicc objects
     public PersoSubState getPersoSubState() {
         synchronized (mLock) {
             return mPersoSubState;
         }
     }
 
+// QTI_END: 2012-09-07: Telephony: Remove CdmaLteUicc objects
     @UnsupportedAppUsage
+// QTI_BEGIN: 2012-09-07: Telephony: Remove CdmaLteUicc objects
     public String getAid() {
         synchronized (mLock) {
             return mAid;
         }
     }
 
+// QTI_END: 2012-09-07: Telephony: Remove CdmaLteUicc objects
     public String getAppLabel() {
         return mAppLabel;
     }
 
     @UnsupportedAppUsage(maxTargetSdk = Build.VERSION_CODES.R, trackingBug = 170729553)
+// QTI_BEGIN: 2012-09-07: Telephony: Remove CdmaLteUicc objects
     public PinState getPin1State() {
         synchronized (mLock) {
             if (mPin1Replaced) {
+// QTI_END: 2012-09-07: Telephony: Remove CdmaLteUicc objects
                 return mUiccProfile.getUniversalPinState();
+// QTI_BEGIN: 2012-09-07: Telephony: Remove CdmaLteUicc objects
             }
             return mPin1State;
         }
     }
 
+// QTI_END: 2012-09-07: Telephony: Remove CdmaLteUicc objects
     @UnsupportedAppUsage
+// QTI_BEGIN: 2012-09-07: Telephony: Remove CdmaLteUicc objects
     public IccFileHandler getIccFileHandler() {
         synchronized (mLock) {
             return mIccFh;
         }
     }
 
+// QTI_END: 2012-09-07: Telephony: Remove CdmaLteUicc objects
     @UnsupportedAppUsage
+// QTI_BEGIN: 2012-09-07: Telephony: Remove CdmaLteUicc objects
     public IccRecords getIccRecords() {
         synchronized (mLock) {
             return mIccRecords;
@@ -716,7 +845,9 @@ public class UiccCardApplication {
      * Handler.
      *
      * onComplete.obj will be an AsyncResult
+// QTI_END: 2012-09-07: Telephony: Remove CdmaLteUicc objects
      * onComplete.arg1 = remaining attempts before puk locked or -1 if unknown
+// QTI_BEGIN: 2012-09-07: Telephony: Remove CdmaLteUicc objects
      *
      * ((AsyncResult)onComplete.obj).exception == null on success
      * ((AsyncResult)onComplete.obj).exception != null on fail
@@ -730,11 +861,14 @@ public class UiccCardApplication {
      */
     public void supplyPin (String pin, Message onComplete) {
         synchronized (mLock) {
+// QTI_END: 2012-09-07: Telephony: Remove CdmaLteUicc objects
             mCi.supplyIccPinForApp(pin, mAid, mHandler.obtainMessage(EVENT_PIN1_PUK1_DONE,
                     onComplete));
+// QTI_BEGIN: 2012-09-07: Telephony: Remove CdmaLteUicc objects
         }
     }
 
+// QTI_END: 2012-09-07: Telephony: Remove CdmaLteUicc objects
     /**
      * Supply the ICC PUK to the ICC
      *
@@ -757,24 +891,31 @@ public class UiccCardApplication {
      *
      *
      */
+// QTI_BEGIN: 2012-09-07: Telephony: Remove CdmaLteUicc objects
     public void supplyPuk (String puk, String newPin, Message onComplete) {
         synchronized (mLock) {
+// QTI_END: 2012-09-07: Telephony: Remove CdmaLteUicc objects
         mCi.supplyIccPukForApp(puk, newPin, mAid,
                 mHandler.obtainMessage(EVENT_PIN1_PUK1_DONE, onComplete));
+// QTI_BEGIN: 2012-09-07: Telephony: Remove CdmaLteUicc objects
         }
     }
 
     public void supplyPin2 (String pin2, Message onComplete) {
         synchronized (mLock) {
+// QTI_END: 2012-09-07: Telephony: Remove CdmaLteUicc objects
             mCi.supplyIccPin2ForApp(pin2, mAid,
                     mHandler.obtainMessage(EVENT_PIN2_PUK2_DONE, onComplete));
+// QTI_BEGIN: 2012-09-07: Telephony: Remove CdmaLteUicc objects
         }
     }
 
     public void supplyPuk2 (String puk2, String newPin2, Message onComplete) {
         synchronized (mLock) {
+// QTI_END: 2012-09-07: Telephony: Remove CdmaLteUicc objects
             mCi.supplyIccPuk2ForApp(puk2, newPin2, mAid,
                     mHandler.obtainMessage(EVENT_PIN2_PUK2_DONE, onComplete));
+// QTI_BEGIN: 2012-09-07: Telephony: Remove CdmaLteUicc objects
         }
     }
 
@@ -785,6 +926,7 @@ public class UiccCardApplication {
         }
     }
 
+// QTI_END: 2012-09-07: Telephony: Remove CdmaLteUicc objects
     public void supplySimDepersonalization(PersoSubState persoType,
                                            String pin, Message onComplete) {
         synchronized (mLock) {
@@ -793,6 +935,7 @@ public class UiccCardApplication {
         }
     }
 
+// QTI_BEGIN: 2012-09-07: Telephony: Remove CdmaLteUicc objects
     /**
      * Check whether ICC pin lock is enabled
      * This is a sync call which returns the cached pin enabled state
@@ -825,6 +968,7 @@ public class UiccCardApplication {
         }
     }
 
+// QTI_END: 2012-09-07: Telephony: Remove CdmaLteUicc objects
     /**
      * Check whether fdn (fixed dialing number) service is available.
      * @return true if ICC fdn service available
@@ -834,6 +978,7 @@ public class UiccCardApplication {
         return mIccFdnAvailable;
     }
 
+// QTI_BEGIN: 2012-09-07: Telephony: Remove CdmaLteUicc objects
     /**
      * Set the ICC pin lock enabled or disabled
      * When the operation is complete, onComplete will be sent to its handler
@@ -897,7 +1042,9 @@ public class UiccCardApplication {
      * @param newPassword is the new password
      * @param onComplete
      *        onComplete.obj will be an AsyncResult
+// QTI_END: 2012-09-07: Telephony: Remove CdmaLteUicc objects
      *        onComplete.arg1 = attempts remaining or -1 if unknown
+// QTI_BEGIN: 2012-09-07: Telephony: Remove CdmaLteUicc objects
      *        ((AsyncResult)onComplete.obj).exception == null on success
      *        ((AsyncResult)onComplete.obj).exception != null on fail
      */
@@ -906,7 +1053,9 @@ public class UiccCardApplication {
         synchronized (mLock) {
             if (DBG) log("changeIccLockPassword");
             mCi.changeIccPinForApp(oldPassword, newPassword, mAid,
+// QTI_END: 2012-09-07: Telephony: Remove CdmaLteUicc objects
                     mHandler.obtainMessage(EVENT_CHANGE_PIN1_DONE, onComplete));
+// QTI_BEGIN: 2012-09-07: Telephony: Remove CdmaLteUicc objects
         }
     }
 
@@ -926,6 +1075,7 @@ public class UiccCardApplication {
         synchronized (mLock) {
             if (DBG) log("changeIccFdnPassword");
             mCi.changeIccPin2ForApp(oldPassword, newPassword, mAid,
+// QTI_END: 2012-09-07: Telephony: Remove CdmaLteUicc objects
                     mHandler.obtainMessage(EVENT_CHANGE_PIN2_DONE, onComplete));
         }
     }
@@ -963,9 +1113,11 @@ public class UiccCardApplication {
     public boolean getIccPuk2Blocked() {
         synchronized (mLock) {
             return mPin2State == PinState.PINSTATE_ENABLED_PERM_BLOCKED;
+// QTI_BEGIN: 2012-09-07: Telephony: Remove CdmaLteUicc objects
         }
     }
 
+// QTI_END: 2012-09-07: Telephony: Remove CdmaLteUicc objects
     @UnsupportedAppUsage(maxTargetSdk = Build.VERSION_CODES.R, trackingBug = 170729553)
     public int getPhoneId() {
         return mUiccProfile.getPhoneId();
@@ -984,14 +1136,22 @@ public class UiccCardApplication {
     }
 
     @UnsupportedAppUsage(maxTargetSdk = Build.VERSION_CODES.R, trackingBug = 170729553)
+// QTI_BEGIN: 2012-09-07: Telephony: Remove CdmaLteUicc objects
     private void log(String msg) {
+// QTI_END: 2012-09-07: Telephony: Remove CdmaLteUicc objects
         Rlog.d(LOG_TAG, msg);
+// QTI_BEGIN: 2012-09-07: Telephony: Remove CdmaLteUicc objects
     }
 
+// QTI_END: 2012-09-07: Telephony: Remove CdmaLteUicc objects
     @UnsupportedAppUsage(maxTargetSdk = Build.VERSION_CODES.R, trackingBug = 170729553)
+// QTI_BEGIN: 2012-09-07: Telephony: Remove CdmaLteUicc objects
     private void loge(String msg) {
+// QTI_END: 2012-09-07: Telephony: Remove CdmaLteUicc objects
         Rlog.e(LOG_TAG, msg);
+// QTI_BEGIN: 2012-09-07: Telephony: Remove CdmaLteUicc objects
     }
+// QTI_END: 2012-09-07: Telephony: Remove CdmaLteUicc objects
 
     public void dump(FileDescriptor fd, PrintWriter printWriter, String[] args) {
         IndentingPrintWriter pw = new IndentingPrintWriter(printWriter, "  ");
@@ -1016,4 +1176,6 @@ public class UiccCardApplication {
         pw.decreaseIndent();
         pw.flush();
     }
+// QTI_BEGIN: 2012-09-07: Telephony: Remove CdmaLteUicc objects
 }
+// QTI_END: 2012-09-07: Telephony: Remove CdmaLteUicc objects

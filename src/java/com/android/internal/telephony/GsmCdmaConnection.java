@@ -175,10 +175,8 @@ public class GsmCdmaConnection extends Connection {
         mOwner = ct;
         mHandler = new MyHandler(mOwner.getLooper());
 
-// QTI_BEGIN: 2018-03-22: Telephony: Reserve orignal dial string for CDMA call
         mDialString = dialString;
         if (!isPhoneTypeGsm()) {
-// QTI_END: 2018-03-22: Telephony: Reserve orignal dial string for CDMA call
             Rlog.d(LOG_TAG, "[GsmCdmaConn] GsmCdmaConnection: dialString=" +
                     maskDialString(dialString));
             dialString = formatDialString(dialString);
@@ -491,7 +489,7 @@ public class GsmCdmaConnection extends Connection {
             case CallFailCause.USER_BUSY:
                 return DisconnectCause.BUSY;
 
-// QTI_BEGIN: 2018-04-11: Telephony: Add CallFailCause values for clear code.
+// QTI_BEGIN: 2018-04-10: Telephony: Add CallFailCause values for clear code.
             case CallFailCause.NO_ROUTE_TO_DESTINATION:
                 return DisconnectCause.NO_ROUTE_TO_DESTINATION;
 
@@ -528,38 +526,38 @@ public class GsmCdmaConnection extends Connection {
             case CallFailCause.STATUS_ENQUIRY:
                 return DisconnectCause.RESP_TO_STATUS_ENQUIRY;
 
-// QTI_END: 2018-04-11: Telephony: Add CallFailCause values for clear code.
+// QTI_END: 2018-04-10: Telephony: Add CallFailCause values for clear code.
             case CallFailCause.NO_CIRCUIT_AVAIL:
-// QTI_BEGIN: 2018-04-11: Telephony: Add CallFailCause values for clear code.
+// QTI_BEGIN: 2018-04-10: Telephony: Add CallFailCause values for clear code.
                 return DisconnectCause.NO_CIRCUIT_AVAIL;
 
             case CallFailCause.NETWORK_OUT_OF_ORDER:
                 return DisconnectCause.NETWORK_OUT_OF_ORDER;
 
-// QTI_END: 2018-04-11: Telephony: Add CallFailCause values for clear code.
+// QTI_END: 2018-04-10: Telephony: Add CallFailCause values for clear code.
             case CallFailCause.TEMPORARY_FAILURE:
-// QTI_BEGIN: 2018-04-11: Telephony: Add CallFailCause values for clear code.
+// QTI_BEGIN: 2018-04-10: Telephony: Add CallFailCause values for clear code.
                 return DisconnectCause.TEMPORARY_FAILURE;
 
-// QTI_END: 2018-04-11: Telephony: Add CallFailCause values for clear code.
+// QTI_END: 2018-04-10: Telephony: Add CallFailCause values for clear code.
             case CallFailCause.SWITCHING_CONGESTION:
-// QTI_BEGIN: 2018-04-11: Telephony: Add CallFailCause values for clear code.
+// QTI_BEGIN: 2018-04-10: Telephony: Add CallFailCause values for clear code.
                 return DisconnectCause.SWITCHING_EQUIPMENT_CONGESTION;
 
             case CallFailCause.ACCESS_INFORMATION_DISCARDED:
                 return DisconnectCause.ACCESS_INFORMATION_DISCARDED;
 
-// QTI_END: 2018-04-11: Telephony: Add CallFailCause values for clear code.
+// QTI_END: 2018-04-10: Telephony: Add CallFailCause values for clear code.
             case CallFailCause.CHANNEL_NOT_AVAIL:
-// QTI_BEGIN: 2018-04-11: Telephony: Add CallFailCause values for clear code.
+// QTI_BEGIN: 2018-04-10: Telephony: Add CallFailCause values for clear code.
                 return DisconnectCause.REQUESTED_CIRCUIT_OR_CHANNEL_NOT_AVAILABLE;
 
             case CallFailCause.RESOURCES_UNAVAILABLE_OR_UNSPECIFIED:
                 return DisconnectCause.RESOURCES_UNAVAILABLE_OR_UNSPECIFIED;
 
-// QTI_END: 2018-04-11: Telephony: Add CallFailCause values for clear code.
+// QTI_END: 2018-04-10: Telephony: Add CallFailCause values for clear code.
             case CallFailCause.QOS_NOT_AVAIL:
-// QTI_BEGIN: 2018-04-11: Telephony: Add CallFailCause values for clear code.
+// QTI_BEGIN: 2018-04-10: Telephony: Add CallFailCause values for clear code.
                 return DisconnectCause.QOS_UNAVAILABLE;
 
             case CallFailCause.REQUESTED_FACILITY_NOT_SUBSCRIBED:
@@ -571,9 +569,9 @@ public class GsmCdmaConnection extends Connection {
             case CallFailCause.BEARER_CAPABILITY_NOT_AUTHORIZED:
                 return DisconnectCause.BEARER_CAPABILITY_NOT_AUTHORIZED;
 
-// QTI_END: 2018-04-11: Telephony: Add CallFailCause values for clear code.
+// QTI_END: 2018-04-10: Telephony: Add CallFailCause values for clear code.
             case CallFailCause.BEARER_NOT_AVAIL:
-// QTI_BEGIN: 2018-04-11: Telephony: Add CallFailCause values for clear code.
+// QTI_BEGIN: 2018-04-10: Telephony: Add CallFailCause values for clear code.
                 return DisconnectCause.BEARER_CAPABILITY_UNAVAILABLE;
 
             case CallFailCause.SERVICE_OPTION_NOT_AVAILABLE:
@@ -635,7 +633,7 @@ public class GsmCdmaConnection extends Connection {
 
             case CallFailCause.NON_SELECTED_USER_CLEARING:
                 return DisconnectCause.NON_SELECTED_USER_CLEARING;
-// QTI_END: 2018-04-11: Telephony: Add CallFailCause values for clear code.
+// QTI_END: 2018-04-10: Telephony: Add CallFailCause values for clear code.
 
             case CallFailCause.EMERGENCY_TEMP_FAILURE:
                 return DisconnectCause.EMERGENCY_TEMP_FAILURE;
@@ -714,9 +712,7 @@ public class GsmCdmaConnection extends Connection {
             case CallFailCause.LOCAL_SERVICE_UNAVAILABLE:
                 return DisconnectCause.OUT_OF_SERVICE;
 
-// QTI_BEGIN: 2018-09-15: Telephony: Handle CallFailCause ACCESS_CLASS_BLOCKED
             case CallFailCause.ACCESS_CLASS_BLOCKED:
-// QTI_END: 2018-09-15: Telephony: Handle CallFailCause ACCESS_CLASS_BLOCKED
             case CallFailCause.ERROR_UNSPECIFIED:
             case CallFailCause.NORMAL_CLEARING:
             default:
@@ -751,10 +747,8 @@ public class GsmCdmaConnection extends Connection {
                     }
                 }
                 if (isPhoneTypeGsm()) {
-// QTI_BEGIN: 2018-09-15: Telephony: Handle CallFailCause ACCESS_CLASS_BLOCKED
                     if (causeCode == CallFailCause.ERROR_UNSPECIFIED ||
                                    causeCode == CallFailCause.ACCESS_CLASS_BLOCKED ) {
-// QTI_END: 2018-09-15: Telephony: Handle CallFailCause ACCESS_CLASS_BLOCKED
                         if (phone.mSST.mRestrictedState.isCsRestricted()) {
                             return DisconnectCause.CS_RESTRICTED;
                         } else if (phone.mSST.mRestrictedState.isCsEmergencyRestricted()) {
@@ -999,7 +993,9 @@ public class GsmCdmaConnection extends Connection {
         clearPostDialListeners();
     }
 
+// QTI_BEGIN: 2013-01-07: Telephony: Update call timer for phantom call
     /*package*/ void
+// QTI_END: 2013-01-07: Telephony: Update call timer for phantom call
     onStartedHolding() {
         mHoldingStartTime = SystemClock.elapsedRealtime();
     }

@@ -14,12 +14,14 @@
  * limitations under the License.
  */
 
+// QTI_BEGIN: 2025-04-25: Telephony: Fix for Incorrectly Showing Satellite Icon
 /*
  * Changes from Qualcomm Technologies, Inc. are provided under the following license:
  * Copyright (c) Qualcomm Technologies, Inc. and/or its subsidiaries.
  * SPDX-License-Identifier: BSD-3-Clause-Clear
  */
 
+// QTI_END: 2025-04-25: Telephony: Fix for Incorrectly Showing Satellite Icon
 package com.android.internal.telephony.satellite;
 
 import static android.hardware.devicestate.DeviceState.PROPERTY_FOLDABLE_DISPLAY_CONFIGURATION_INNER_PRIMARY;
@@ -5695,11 +5697,13 @@ public class SatelliteController extends Handler {
                 + subId + "), carrierId(" + carrierId + "), specificCarrierId("
                 + specificCarrierId + ")");
         if (subId == SubscriptionManager.INVALID_SUBSCRIPTION_ID) {
+// QTI_BEGIN: 2025-04-25: Telephony: Fix for Incorrectly Showing Satellite Icon
             //Reset NTN mode when SIM is removed
             synchronized (mSatelliteConnectedLock) {
                 mInitialized.put(slotIndex, false);
                 mLastNotifiedNtnMode.put(slotIndex, false);
             }
+// QTI_END: 2025-04-25: Telephony: Fix for Incorrectly Showing Satellite Icon
             return;
         }
 
@@ -6186,16 +6190,21 @@ public class SatelliteController extends Handler {
             return;
         }
 
+// QTI_BEGIN: 2025-04-14: Telephony: Update the logic of calling setSatelliteEnabledForCarrier HAL API.
         /* Request to enable or disable the satellite in the cellular modem. */
+// QTI_END: 2025-04-14: Telephony: Update the logic of calling setSatelliteEnabledForCarrier HAL API.
         boolean isSatelliteExpectedToBeEnabled = !isSatelliteRestrictedForCarrier(subId)
+// QTI_BEGIN: 2025-04-14: Telephony: Update the logic of calling setSatelliteEnabledForCarrier HAL API.
                 && isSatelliteSupportedViaCarrier(subId)
                 && getCarrierRoamingNtnConnectType(subId) == CARRIER_ROAMING_NTN_CONNECT_AUTOMATIC;
+// QTI_END: 2025-04-14: Telephony: Update the logic of calling setSatelliteEnabledForCarrier HAL API.
         boolean isSatelliteEnabledForCarrierAtModem = isSatelliteEnabledForCarrierAtModem(
                 phone.getSubId());
         plogd("evaluateEnablingSatelliteForCarrier: subId=" + subId + " reason=" + reason
                 + " isSatelliteExpectedToBeEnabled=" + isSatelliteExpectedToBeEnabled
                 + " isSatelliteEnabledForCarrierAtModem=" + isSatelliteEnabledForCarrierAtModem);
 
+// QTI_BEGIN: 2025-04-14: Telephony: Update the logic of calling setSatelliteEnabledForCarrier HAL API.
         int simSlot = SubscriptionManager.getSlotIndex(subId);
         RequestHandleSatelliteAttachRestrictionForCarrierArgument argument =
                 new RequestHandleSatelliteAttachRestrictionForCarrierArgument(subId,
@@ -6207,6 +6216,7 @@ public class SatelliteController extends Handler {
                 EVENT_EVALUATE_SATELLITE_ATTACH_RESTRICTION_CHANGE_DONE, request);
         phone.setSatelliteEnabledForCarrier(simSlot,
                 isSatelliteExpectedToBeEnabled, onCompleted);
+// QTI_END: 2025-04-14: Telephony: Update the logic of calling setSatelliteEnabledForCarrier HAL API.
     }
 
     @SatelliteManager.SatelliteResult private int evaluateOemSatelliteRequestAllowed(
@@ -6377,19 +6387,27 @@ public class SatelliteController extends Handler {
             return;
         }
 
+// QTI_BEGIN: 2025-04-25: Telephony: Fix for Incorrectly Showing Satellite Icon
         int phoneId = phone.getPhoneId();
+// QTI_END: 2025-04-25: Telephony: Fix for Incorrectly Showing Satellite Icon
         synchronized (mSatelliteConnectedLock) {
+// QTI_BEGIN: 2025-04-25: Telephony: Fix for Incorrectly Showing Satellite Icon
             boolean initialized = mInitialized.get(phoneId);
             boolean lastNotifiedNtnMode = mLastNotifiedNtnMode.get(phoneId);
+// QTI_END: 2025-04-25: Telephony: Fix for Incorrectly Showing Satellite Icon
             boolean currNtnMode = isInSatelliteModeForCarrierRoaming(phone);
+// QTI_BEGIN: 2025-04-25: Telephony: Fix for Incorrectly Showing Satellite Icon
             plogd("updateLastNotifiedNtnModeAndNotify: phone=" + phoneId
                     + " subId=" + phone.getSubId()
+// QTI_END: 2025-04-25: Telephony: Fix for Incorrectly Showing Satellite Icon
                     + " initialized=" + initialized
                     + " lastNotifiedNtnMode=" + lastNotifiedNtnMode
                     + " currNtnMode=" + currNtnMode);
             if (!initialized || lastNotifiedNtnMode != currNtnMode) {
+// QTI_BEGIN: 2025-04-25: Telephony: Fix for Incorrectly Showing Satellite Icon
                 if (!initialized) mInitialized.put(phoneId, true);
                 mLastNotifiedNtnMode.put(phoneId, currNtnMode);
+// QTI_END: 2025-04-25: Telephony: Fix for Incorrectly Showing Satellite Icon
                 phone.notifyCarrierRoamingNtnModeChanged(currNtnMode);
                 updateLastNotifiedCarrierRoamingNtnSignalStrengthAndNotify(phone);
                 logCarrierRoamingSatelliteSessionStats(phone, lastNotifiedNtnMode, currNtnMode);
@@ -9241,11 +9259,14 @@ public class SatelliteController extends Handler {
         if (isValidSubscriptionId(subId)) {
             Map<String, Integer> dataServicePolicy;
             synchronized (mSupportedSatelliteServicesLock) {
-                dataServicePolicy = mEntitlementDataServicePolicyMapPerCarrier.get(subId);
+                dataServicePolicy = getConfigForSubId(subId).getBoolean(
+                        KEY_SATELLITE_ENTITLEMENT_SUPPORTED_BOOL, false)
+                        ? mEntitlementDataServicePolicyMapPerCarrier.get(subId)
+                        : null;
             }
             plogd("getSatelliteDataServicePolicyForPlmn: dataServicePolicy=" + dataServicePolicy);
 
-            if (dataServicePolicy != null) {
+            if (dataServicePolicy != null && !dataServicePolicy.isEmpty()) {
                 if (!TextUtils.isEmpty(plmn) && dataServicePolicy.containsKey(plmn)) {
                     plogd("getSatelliteDataServicePolicyForPlmn: "
                             + "return policy using dataServicePolicy map");
@@ -9260,9 +9281,18 @@ public class SatelliteController extends Handler {
                             preferredPolicy = policy;
                         }
                     }
-                    plogd("getSatelliteDataServicePolicyForPlmn: "
-                            + "return preferredPolicy=" + preferredPolicy);
-                    return preferredPolicy;
+
+                    // when invoked getSatelliteDataServicePolicyPlmn() with empty plmn and data
+                    // service policy not provisioned i.e.data service policy info is empty with
+                    // or without plmn key, then ignore setting preferred data supported mode policy
+                    // as restricted and fallback to carrier configured data supported mode for the
+                    // subscription id.
+                    if (preferredPolicy
+                            > CarrierConfigManager.SATELLITE_DATA_SUPPORT_ONLY_RESTRICTED) {
+                        plogd("getSatelliteDataServicePolicyForPlmn: "
+                                + "return preferredPolicy=" + preferredPolicy);
+                        return preferredPolicy;
+                    }
                 }
             }
 

@@ -667,9 +667,7 @@ public class CarrierServiceStateTracker extends Handler {
 
         public String getNotificationTag() {
             return EMERGENCY_NOTIFICATION_TAG;
-// QTI_BEGIN: 2025-02-27: Telephony: Remove tabs
         }
-// QTI_END: 2025-02-27: Telephony: Remove tabs
 
         /**
          * Contains logic on sending notifications,
@@ -710,9 +708,7 @@ public class CarrierServiceStateTracker extends Handler {
                         .setOngoing(true)
                         .setChannelId(NotificationChannelController.CHANNEL_ID_WFC);
             }
-// QTI_BEGIN: 2020-05-19: Telephony: VoWifi notification for emergency calls
         }
-// QTI_END: 2020-05-19: Telephony: VoWifi notification for emergency calls
 
         /**
          * add a button to the notification that has a broadcast intent embedded to silence the
@@ -769,7 +765,5 @@ public class CarrierServiceStateTracker extends Handler {
                 Rlog.e(LOG_TAG, "dismissEmergencyCallingNotification", e);
             }
         }
-// QTI_BEGIN: 2020-05-19: Telephony: VoWifi notification for emergency calls
     }
-// QTI_END: 2020-05-19: Telephony: VoWifi notification for emergency calls
 }

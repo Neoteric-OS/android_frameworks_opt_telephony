@@ -870,10 +870,8 @@ public class CallManager {
      * Phone can make a call only if ALL of the following are true:
      *        - Phone is not powered off
      *        - There's no incoming or waiting call
-// QTI_BEGIN: 2025-01-28: Telephony: Revert "[DSDA] Modify OTASP logic when placing OTASP call"
      *        - The foreground call is ACTIVE or IDLE or DISCONNECTED.
      *          (We mainly need to make sure it *isn't* DIALING or ALERTING.)
-// QTI_END: 2025-01-28: Telephony: Revert "[DSDA] Modify OTASP logic when placing OTASP call"
      * @param phone
      * @return true if the phone can make a new call
      */
@@ -2079,9 +2077,7 @@ public class CallManager {
                             && ((ImsPhoneConnection) c).isIncomingCallAutoRejected()) {
                         incomingRejected = true;
                     }
-// QTI_BEGIN: 2025-01-28: Telephony: Revert "IMS: Update Maximum Ringing Calls for DSDA"
                     if ((getActiveFgCallState(subId).isDialing() || hasMoreThanOneRingingCall())
-// QTI_END: 2025-01-28: Telephony: Revert "IMS: Update Maximum Ringing Calls for DSDA"
                             && (!incomingRejected)
                             && !mTelecomFeatureFlags.enableCallSequencing()) {
                         try {

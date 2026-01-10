@@ -44,9 +44,7 @@ import android.util.LocalLog;
 
 import com.android.internal.telephony.GlobalSettingsHelper;
 import com.android.internal.telephony.Phone;
-// QTI_BEGIN: 2022-05-13: Telephony: Fix PDN isn't torn down after disabling data during call
 import com.android.internal.telephony.PhoneConstants;
-// QTI_END: 2022-05-13: Telephony: Fix PDN isn't torn down after disabling data during call
 import com.android.internal.telephony.PhoneFactory;
 import com.android.internal.telephony.SettingsObserver;
 import com.android.internal.telephony.TelephonyCapabilities;
@@ -453,12 +451,12 @@ public class DataSettingsManager extends Handler {
     }
 
     private boolean isStandAloneOpportunistic(int subId) {
-// QTI_BEGIN: 2023-11-10: Telephony: Remove legacy subscription code
+// QTI_BEGIN: 2023-11-09: Telephony: Remove legacy subscription code
         SubscriptionInfoInternal subInfo = SubscriptionManagerService.getInstance()
                 .getSubscriptionInfoInternal(subId);
         return subInfo != null && subInfo.isOpportunistic()
                 && TextUtils.isEmpty(subInfo.getGroupUuid());
-// QTI_END: 2023-11-10: Telephony: Remove legacy subscription code
+// QTI_END: 2023-11-09: Telephony: Remove legacy subscription code
     }
 
     /**
@@ -642,13 +640,13 @@ public class DataSettingsManager extends Handler {
 
     /** Refresh the enabled mobile data policies from Telephony database */
     private void refreshEnabledMobileDataPolicy() {
-// QTI_BEGIN: 2023-11-10: Telephony: Remove legacy subscription code
+// QTI_BEGIN: 2023-11-09: Telephony: Remove legacy subscription code
         SubscriptionInfoInternal subInfo = SubscriptionManagerService.getInstance()
                 .getSubscriptionInfoInternal(mSubId);
         if (subInfo != null) {
             mEnabledMobileDataPolicy = getMobileDataPolicyEnabled(
                     subInfo.getEnabledMobileDataPolicies());
-// QTI_END: 2023-11-10: Telephony: Remove legacy subscription code
+// QTI_END: 2023-11-09: Telephony: Remove legacy subscription code
         }
     }
 
@@ -689,14 +687,14 @@ public class DataSettingsManager extends Handler {
 
         String enabledMobileDataPolicies = mEnabledMobileDataPolicy.stream().map(String::valueOf)
                 .collect(Collectors.joining(","));
-// QTI_BEGIN: 2023-11-10: Telephony: Remove legacy subscription code
+// QTI_BEGIN: 2023-11-09: Telephony: Remove legacy subscription code
         SubscriptionManagerService.getInstance().setEnabledMobileDataPolicies(mSubId,
                 enabledMobileDataPolicies);
         logl(TelephonyUtils.mobileDataPolicyToString(mobileDataPolicy) + " changed to "
                 + enable);
         updateDataEnabledAndNotify(TelephonyManager.DATA_ENABLED_REASON_OVERRIDE);
         notifyDataEnabledOverrideChanged(enable, mobileDataPolicy);
-// QTI_END: 2023-11-10: Telephony: Remove legacy subscription code
+// QTI_END: 2023-11-09: Telephony: Remove legacy subscription code
     }
 
     /**
@@ -791,13 +789,13 @@ public class DataSettingsManager extends Handler {
             overridden = apnType == ApnSetting.TYPE_MMS;
         }
 
-// QTI_BEGIN: 2023-11-10: Telephony: Remove legacy subscription code
+// QTI_BEGIN: 2023-11-09: Telephony: Remove legacy subscription code
         boolean isNonDds = mPhone.getSubId() != SubscriptionManagerService.getInstance()
                 .getDefaultDataSubId();
 
         Phone defaultDataPhone = PhoneFactory.getPhone(SubscriptionManagerService.getInstance()
                 .getPhoneId(SubscriptionManagerService.getInstance().getDefaultDataSubId()));
-// QTI_END: 2023-11-10: Telephony: Remove legacy subscription code
+// QTI_END: 2023-11-09: Telephony: Remove legacy subscription code
 
         boolean isDdsUserEnabled = defaultDataPhone != null && defaultDataPhone.isUserDataEnabled();
 

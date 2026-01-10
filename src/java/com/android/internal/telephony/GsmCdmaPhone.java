@@ -14,12 +14,14 @@
  * limitations under the License.
  */
 
+// QTI_BEGIN: 2025-05-12: Telephony: Load TTY mode with a delay
 /*
  * Changes from Qualcomm Innovation Center, Inc. are provided under the following license:
  * Copyright (c) 2025 Qualcomm Innovation Center, Inc. All rights reserved.
  * SPDX-License-Identifier: BSD-3-Clause-Clear
  */
 
+// QTI_END: 2025-05-12: Telephony: Load TTY mode with a delay
 package com.android.internal.telephony;
 
 import static android.telephony.NetworkRegistrationInfo.DOMAIN_PS;
@@ -131,9 +133,7 @@ import com.android.internal.telephony.uicc.IccCardApplicationStatus.AppType;
 import com.android.internal.telephony.uicc.IccCardStatus;
 import com.android.internal.telephony.uicc.IccException;
 import com.android.internal.telephony.uicc.IccRecords;
-// QTI_BEGIN: 2020-03-21: Telephony: Add support to enable sim on/off feature
 import com.android.internal.telephony.uicc.IccUtils;
-// QTI_END: 2020-03-21: Telephony: Add support to enable sim on/off feature
 import com.android.internal.telephony.uicc.IccVmNotSupportedException;
 import com.android.internal.telephony.uicc.IsimRecords;
 import com.android.internal.telephony.uicc.IsimUiccRecords;
@@ -244,14 +244,14 @@ public class GsmCdmaPhone extends Phone {
     private final RegistrantList mVolteSilentRedialRegistrants = new RegistrantList();
     private DialArgs mDialArgs = null;
     private final RegistrantList mEmergencyDomainSelectedRegistrants = new RegistrantList();
-// QTI_BEGIN: 2023-05-25: Telephony: Fix Primary IMEI not updated after modem SSR
+// QTI_BEGIN: 2023-05-24: Telephony: Fix Primary IMEI not updated after modem SSR
     protected String mImei;
-// QTI_END: 2023-05-25: Telephony: Fix Primary IMEI not updated after modem SSR
+// QTI_END: 2023-05-24: Telephony: Fix Primary IMEI not updated after modem SSR
     private String mImeiSv;
     private String mVmNumber;
-// QTI_BEGIN: 2023-05-25: Telephony: Fix Primary IMEI not updated after modem SSR
+// QTI_BEGIN: 2023-05-24: Telephony: Fix Primary IMEI not updated after modem SSR
     protected int mImeiType = IMEI_TYPE_UNKNOWN;
-// QTI_END: 2023-05-25: Telephony: Fix Primary IMEI not updated after modem SSR
+// QTI_END: 2023-05-24: Telephony: Fix Primary IMEI not updated after modem SSR
     private int mSimState = TelephonyManager.SIM_STATE_UNKNOWN;
 
     @VisibleForTesting
@@ -406,7 +406,6 @@ public class GsmCdmaPhone extends Phone {
         mSST.registerForVoiceRegStateOrRatChanged(this, EVENT_VRS_OR_RAT_CHANGED, null);
         mSST.getServiceStateStats().registerDataNetworkControllerCallback();
 
-// QTI_BEGIN: 2023-11-10: Telephony: Remove legacy subscription code
         mSubscriptionManagerService.registerCallback(new SubscriptionManagerServiceCallback(
                 this::post) {
             @Override
@@ -414,7 +413,6 @@ public class GsmCdmaPhone extends Phone {
                 reapplyUiccAppsEnablementIfNeeded(ENABLE_UICC_APPS_MAX_RETRIES);
             }
         });
-// QTI_END: 2023-11-10: Telephony: Remove legacy subscription code
 
         mLinkBandwidthEstimator = mTelephonyComponentFactory
                 .inject(LinkBandwidthEstimator.class.getName())
@@ -423,7 +421,9 @@ public class GsmCdmaPhone extends Phone {
         mCallWaitingController = new CallWaitingController(this);
 
         if (hasCalling()) {
+// QTI_BEGIN: 2025-05-12: Telephony: Load TTY mode with a delay
             post(() -> loadTtyMode());
+// QTI_END: 2025-05-12: Telephony: Load TTY mode with a delay
 
             CallManager.getInstance().registerPhone(this);
         }
@@ -448,9 +448,9 @@ public class GsmCdmaPhone extends Phone {
         public void onReceive(Context context, Intent intent) {
             Rlog.d(LOG_TAG, "mBroadcastReceiver: action " + intent.getAction());
             String action = intent.getAction();
-// QTI_BEGIN: 2022-12-16: Telephony: IMS: Add support to read essential records loaded
+// QTI_BEGIN: 2022-12-15: Telephony: IMS: Add support to read essential records loaded
             if ((CarrierConfigManager.ACTION_CARRIER_CONFIG_CHANGED.equals(action) ||
-// QTI_END: 2022-12-16: Telephony: IMS: Add support to read essential records loaded
+// QTI_END: 2022-12-15: Telephony: IMS: Add support to read essential records loaded
 // QTI_BEGIN: 2025-02-03: Telephony: Decouple Qualcomm value adds.
                     CarrierConfigManager.ACTION_ESSENTIAL_RECORDS_LOADED.equals(action))) {
 // QTI_END: 2025-02-03: Telephony: Decouple Qualcomm value adds.
@@ -539,9 +539,9 @@ public class GsmCdmaPhone extends Phone {
         mCi.registerForNotifyAnbr(this, EVENT_TRIGGER_NOTIFY_ANBR, null);
         IntentFilter filter = new IntentFilter(
                 CarrierConfigManager.ACTION_CARRIER_CONFIG_CHANGED);
-// QTI_BEGIN: 2022-12-16: Telephony: IMS: Add support to read essential records loaded
+// QTI_BEGIN: 2022-12-15: Telephony: IMS: Add support to read essential records loaded
         filter.addAction(CarrierConfigManager.ACTION_ESSENTIAL_RECORDS_LOADED);
-// QTI_END: 2022-12-16: Telephony: IMS: Add support to read essential records loaded
+// QTI_END: 2022-12-15: Telephony: IMS: Add support to read essential records loaded
         filter.addAction(TelecomManager.ACTION_CURRENT_TTY_MODE_CHANGED);
         filter.addAction(TelecomManager.ACTION_TTY_PREFERRED_MODE_CHANGED);
         filter.addAction(TelephonyManager.ACTION_SIM_APPLICATION_STATE_CHANGED);
@@ -581,9 +581,7 @@ public class GsmCdmaPhone extends Phone {
         mCi.registerForSecurityAlgorithmUpdates(
                 this, EVENT_SECURITY_ALGORITHM_UPDATE, null);
 
-// QTI_BEGIN: 2023-11-10: Telephony: Remove legacy subscription code
         initializeCarrierApps();
-// QTI_END: 2023-11-10: Telephony: Remove legacy subscription code
     }
 
     private void initRatSpecific(int precisePhoneType) {
@@ -644,9 +642,7 @@ public class GsmCdmaPhone extends Phone {
                 logd("update icc_operator_numeric=" + operatorNumeric);
                 tm.setSimOperatorNumericForPhone(mPhoneId, operatorNumeric);
 
-// QTI_BEGIN: 2023-11-10: Telephony: Remove legacy subscription code
                 mSubscriptionManagerService.setMccMnc(getSubId(), operatorNumeric);
-// QTI_END: 2023-11-10: Telephony: Remove legacy subscription code
 
                 // Sets iso country property by retrieving from build-time system property
                 String iso = "";
@@ -658,9 +654,7 @@ public class GsmCdmaPhone extends Phone {
 
                 logd("init: set 'gsm.sim.operator.iso-country' to iso=" + iso);
                 tm.setSimCountryIsoForPhone(mPhoneId, iso);
-// QTI_BEGIN: 2023-11-10: Telephony: Remove legacy subscription code
                 mSubscriptionManagerService.setCountryIso(getSubId(), iso);
-// QTI_END: 2023-11-10: Telephony: Remove legacy subscription code
 
                 // Updates MCC MNC device configuration information
                 logd("update mccmnc=" + operatorNumeric);
@@ -990,7 +984,7 @@ public class GsmCdmaPhone extends Phone {
         mNotifier.notifyCallForwardingChanged(this);
     }
 
-// QTI_BEGIN: 2020-05-22: Telephony: IMS: USSD over IMS
+// QTI_BEGIN: 2020-05-21: Telephony: IMS: USSD over IMS
     @Override
     public void notifyMigrateUssd(String num, ResultReceiver wrappedCallback)
             throws UnsupportedOperationException {
@@ -999,7 +993,7 @@ public class GsmCdmaPhone extends Phone {
         mPendingMMIs.add(mmi);
     }
 
-// QTI_END: 2020-05-22: Telephony: IMS: USSD over IMS
+// QTI_END: 2020-05-21: Telephony: IMS: USSD over IMS
     @Override
     public void registerForSuppServiceNotification(
             Handler h, int what, Object obj) {
@@ -1376,13 +1370,13 @@ public class GsmCdmaPhone extends Phone {
         }
 
         if (!isInCall()) {
-// QTI_BEGIN: 2021-02-12: Telephony: IMS: Fix incall MMI code failure after turning volte off
+// QTI_BEGIN: 2021-02-11: Telephony: IMS: Fix incall MMI code failure after turning volte off
             Phone imsPhone = mImsPhone;
             if (imsPhone != null
                     && imsPhone.getServiceState().getState() == ServiceState.STATE_IN_SERVICE) {
                 return imsPhone.handleInCallMmiCommands(dialString);
             }
-// QTI_END: 2021-02-12: Telephony: IMS: Fix incall MMI code failure after turning volte off
+// QTI_END: 2021-02-11: Telephony: IMS: Fix incall MMI code failure after turning volte off
             return false;
         }
 
@@ -1450,23 +1444,23 @@ public class GsmCdmaPhone extends Phone {
                 && mImsPhone.isImsAvailable();
     }
 
-// QTI_BEGIN: 2023-12-06: Telephony: Allow IMS dial when UE is PS attached
+// QTI_BEGIN: 2023-12-05: Telephony: Allow IMS dial when UE is PS attached
     private boolean useImsForPsAttachedCall() {
-// QTI_END: 2023-12-06: Telephony: Allow IMS dial when UE is PS attached
-// QTI_BEGIN: 2021-02-03: Telephony: IMS: Allow dial when UE is PS only attached
+// QTI_END: 2023-12-05: Telephony: Allow IMS dial when UE is PS attached
+// QTI_BEGIN: 2021-02-02: Telephony: IMS: Allow dial when UE is PS only attached
         return isImsUseEnabled()
                 && mImsPhone != null
                 && isOutgoingImsVoiceAllowed()
                 && Settings.Global.getInt(mContext.getContentResolver(),
-// QTI_END: 2021-02-03: Telephony: IMS: Allow dial when UE is PS only attached
-// QTI_BEGIN: 2023-12-06: Telephony: Allow IMS dial when UE is PS attached
+// QTI_END: 2021-02-02: Telephony: IMS: Allow dial when UE is PS only attached
+// QTI_BEGIN: 2023-12-05: Telephony: Allow IMS dial when UE is PS attached
                         "enable_allow_PS_attached_dial", 1) == 1
                 && (mImsPhone.getServiceState().getState() == ServiceState.STATE_OUT_OF_SERVICE);
-// QTI_END: 2023-12-06: Telephony: Allow IMS dial when UE is PS attached
-// QTI_BEGIN: 2021-02-03: Telephony: IMS: Allow dial when UE is PS only attached
+// QTI_END: 2023-12-05: Telephony: Allow IMS dial when UE is PS attached
+// QTI_BEGIN: 2021-02-02: Telephony: IMS: Allow dial when UE is PS only attached
     }
 
-// QTI_END: 2021-02-03: Telephony: IMS: Allow dial when UE is PS only attached
+// QTI_END: 2021-02-02: Telephony: IMS: Allow dial when UE is PS only attached
     @Override
     public Connection startConference(String[] participantsToDial, DialArgs dialArgs)
             throws CallStateException {
@@ -1577,9 +1571,9 @@ public class GsmCdmaPhone extends Phone {
         boolean useImsForCall = useImsForCall(dialArgs)
                 && !shallDialOnCircuitSwitch(dialArgs.intentExtras)
                 && (isWpsCall ? allowWpsOverIms : true);
-// QTI_BEGIN: 2023-12-06: Telephony: Allow IMS dial when UE is PS attached
+// QTI_BEGIN: 2023-12-05: Telephony: Allow IMS dial when UE is PS attached
         boolean useImsForPsAttachedCall = useImsForPsAttachedCall();
-// QTI_END: 2023-12-06: Telephony: Allow IMS dial when UE is PS attached
+// QTI_END: 2023-12-05: Telephony: Allow IMS dial when UE is PS attached
 
         Bundle extras = dialArgs.intentExtras;
         // Only when the domain selection service is supported, EXTRA_DIAL_DOMAIN extra shall exist.
@@ -1614,9 +1608,9 @@ public class GsmCdmaPhone extends Phone {
 
         if (DBG) {
             logi("useImsForCall=" + useImsForCall
-// QTI_BEGIN: 2023-12-06: Telephony: Allow IMS dial when UE is PS attached
+// QTI_BEGIN: 2023-12-05: Telephony: Allow IMS dial when UE is PS attached
                     + ", useImsForPsAttachedCall=" + useImsForPsAttachedCall
-// QTI_END: 2023-12-06: Telephony: Allow IMS dial when UE is PS attached
+// QTI_END: 2023-12-05: Telephony: Allow IMS dial when UE is PS attached
                     + ", useOnlyDialedSimEccList=" + useOnlyDialedSimEccList
                     + ", isEmergency=" + isEmergency
                     + ", useImsForEmergency=" + useImsForEmergency
@@ -1657,15 +1651,15 @@ public class GsmCdmaPhone extends Phone {
 
         if ((useImsForCall && (!isMmiCode || isPotentialUssdCode))
                 || (isMmiCode && useImsForUt)
-// QTI_BEGIN: 2021-02-03: Telephony: IMS: Allow dial when UE is PS only attached
+// QTI_BEGIN: 2021-02-02: Telephony: IMS: Allow dial when UE is PS only attached
                 || useImsForEmergency
-// QTI_END: 2021-02-03: Telephony: IMS: Allow dial when UE is PS only attached
-// QTI_BEGIN: 2023-12-06: Telephony: Allow IMS dial when UE is PS attached
+// QTI_END: 2021-02-02: Telephony: IMS: Allow dial when UE is PS only attached
+// QTI_BEGIN: 2023-12-05: Telephony: Allow IMS dial when UE is PS attached
                 || (useImsForPsAttachedCall && !isMmiCode && !isPotentialUssdCode
-// QTI_END: 2023-12-06: Telephony: Allow IMS dial when UE is PS attached
-// QTI_BEGIN: 2021-02-03: Telephony: IMS: Allow dial when UE is PS only attached
+// QTI_END: 2023-12-05: Telephony: Allow IMS dial when UE is PS attached
+// QTI_BEGIN: 2021-02-02: Telephony: IMS: Allow dial when UE is PS only attached
                            && !VideoProfile.isVideo(dialArgs.videoState))) {
-// QTI_END: 2021-02-03: Telephony: IMS: Allow dial when UE is PS only attached
+// QTI_END: 2021-02-02: Telephony: IMS: Allow dial when UE is PS only attached
             try {
                 if (DBG) logd("Trying IMS PS call");
                 chosenPhoneConsumer.accept(imsPhone);
@@ -1694,9 +1688,7 @@ public class GsmCdmaPhone extends Phone {
         // Check non-emergency voice CS call - shouldn't dial when POWER_OFF
         if (mSST != null && mSST.mSS.getState() == ServiceState.STATE_POWER_OFF /* CS POWER_OFF */
                 && !VideoProfile.isVideo(dialArgs.videoState) /* voice call */
-// QTI_BEGIN: 2018-03-10: Telephony: IMS: Allow USSD request in airplane mode
                 && !isEmergency /* non-emergency call */
-// QTI_END: 2018-03-10: Telephony: IMS: Allow USSD request in airplane mode
                 && !(isMmiCode && useImsForUt) /* not UT */
                 /* If config_allow_ussd_over_ims is false, USSD is sent over the CS pipe instead */
                 && !isPotentialUssdCode) {
@@ -1705,9 +1697,7 @@ public class GsmCdmaPhone extends Phone {
                 "cannot dial voice call in airplane mode");
         }
         // Check for service before placing non emergency CS voice call.
-// QTI_BEGIN: 2019-05-04: Telephony: Support for NR radio technology
         // Allow dial only if either CS is camped on any RAT (or) PS is in LTE/NR service.
-// QTI_END: 2019-05-04: Telephony: Support for NR radio technology
         if (mSST != null
                 && mSST.mSS.getState() == ServiceState.STATE_OUT_OF_SERVICE /* CS out of service */
                 && !(mSST.mSS.getDataRegistrationState() == ServiceState.STATE_IN_SERVICE
@@ -1811,16 +1801,16 @@ public class GsmCdmaPhone extends Phone {
                 return mCT.dialGsm(mmi.mDialingNumber, mmi.getCLIRMode(), dialArgs.uusInfo,
                         dialArgs.intentExtras);
             } else {
-// QTI_BEGIN: 2023-12-20: Telephony: Guest-Mode FR: Add support for blocking SS in guest mode.
+// QTI_BEGIN: 2023-12-19: Telephony: Guest-Mode FR: Add support for blocking SS in guest mode.
                 // Must be primary user to use supplementary service.
-// QTI_END: 2023-12-20: Telephony: Guest-Mode FR: Add support for blocking SS in guest mode.
+// QTI_END: 2023-12-19: Telephony: Guest-Mode FR: Add support for blocking SS in guest mode.
 // QTI_BEGIN: 2025-02-03: Telephony: Decouple Qualcomm value adds.
                 if(!QtiImsUtils.isSystemUser()) {
                     QtiImsUtils.throwExceptionForSupplementaryService();
 // QTI_END: 2025-02-03: Telephony: Decouple Qualcomm value adds.
-// QTI_BEGIN: 2023-12-20: Telephony: Guest-Mode FR: Add support for blocking SS in guest mode.
+// QTI_BEGIN: 2023-12-19: Telephony: Guest-Mode FR: Add support for blocking SS in guest mode.
                 }
-// QTI_END: 2023-12-20: Telephony: Guest-Mode FR: Add support for blocking SS in guest mode.
+// QTI_END: 2023-12-19: Telephony: Guest-Mode FR: Add support for blocking SS in guest mode.
                 mPendingMMIs.add(mmi);
                 mMmiRegistrants.notifyRegistrants(new AsyncResult(null, mmi, null));
                 mmi.processCode();
@@ -1855,9 +1845,9 @@ public class GsmCdmaPhone extends Phone {
         return false;
     }
 
-// QTI_BEGIN: 2022-04-28: Telephony: Make Secure Mode related changes
+// QTI_BEGIN: 2022-04-27: Telephony: Make Secure Mode related changes
     protected void sendUssdResponse(String ussdRequest, CharSequence message, int returnCode,
-// QTI_END: 2022-04-28: Telephony: Make Secure Mode related changes
+// QTI_END: 2022-04-27: Telephony: Make Secure Mode related changes
                                    ResultReceiver wrappedCallback) {
         UssdResponse response = new UssdResponse(ussdRequest, message);
         Bundle returnData = new Bundle();
@@ -1884,9 +1874,7 @@ public class GsmCdmaPhone extends Phone {
         // Try over IMS if possible.
         Phone imsPhone = mImsPhone;
         if ((imsPhone != null)
-// QTI_BEGIN: 2020-03-31: Telephony: IMS: Send call forwarding request over IMS only if UT is enabled am: b10a392e79
                 && imsPhone.isUtEnabled()) {
-// QTI_END: 2020-03-31: Telephony: IMS: Send call forwarding request over IMS only if UT is enabled am: b10a392e79
             try {
                 logd("handleUssdRequest: attempting over IMS");
                 return imsPhone.handleUssdRequest(ussdRequest, wrappedCallback);
@@ -2122,21 +2110,15 @@ public class GsmCdmaPhone extends Phone {
 
     @Override
     public String getDeviceId() {
-// QTI_BEGIN: 2019-06-07: Telephony: Revert "Dialer: Display 14-digit IMEI (Ignore Check Digit)"
         if (isPhoneTypeGsm()) {
-// QTI_END: 2019-06-07: Telephony: Revert "Dialer: Display 14-digit IMEI (Ignore Check Digit)"
 // QTI_BEGIN: 2025-02-03: Telephony: Decouple Qualcomm value adds.
             return this.getImei();
 // QTI_END: 2025-02-03: Telephony: Decouple Qualcomm value adds.
-// QTI_BEGIN: 2018-03-23: Telephony: Dialer: Display 14-digit IMEI (Ignore Check Digit)
         } else {
-// QTI_END: 2018-03-23: Telephony: Dialer: Display 14-digit IMEI (Ignore Check Digit)
-// QTI_BEGIN: 2019-06-07: Telephony: Revert "Dialer: Display 14-digit IMEI (Ignore Check Digit)"
             CarrierConfigManager configManager = (CarrierConfigManager)
                     mContext.getSystemService(Context.CARRIER_CONFIG_SERVICE);
             boolean force_imei = configManager.getConfigForSubId(getSubId())
                     .getBoolean(CarrierConfigManager.KEY_FORCE_IMEI_BOOL);
-// QTI_END: 2019-06-07: Telephony: Revert "Dialer: Display 14-digit IMEI (Ignore Check Digit)"
 // QTI_BEGIN: 2025-02-03: Telephony: Decouple Qualcomm value adds.
             if (force_imei) return this.getImei();
 // QTI_END: 2025-02-03: Telephony: Decouple Qualcomm value adds.
@@ -3527,7 +3509,6 @@ public class GsmCdmaPhone extends Phone {
                 }
 
                 if (DBG) logd("Baseband version: " + ar.result);
-// QTI_BEGIN: 2020-09-22: Telephony: Truncate baseband version string to 45 characters at most
                 /* Android property value is limited to 91 characters, but low layer
                  could pass a larger version string. To avoid runtime exception,
                  truncate the string baseband version string to 45 characters at most
@@ -3536,7 +3517,6 @@ public class GsmCdmaPhone extends Phone {
                  keep the end of the version.
                 */
                 String version = (String)ar.result;
-// QTI_END: 2020-09-22: Telephony: Truncate baseband version string to 45 characters at most
                 if (version != null) {
                     int length = version.length();
                     final int MAX_VERSION_LEN = SystemProperties.PROP_VALUE_MAX/2;
@@ -4268,9 +4248,9 @@ public class GsmCdmaPhone extends Phone {
         return isProhibited;
     }
 
-// QTI_BEGIN: 2022-03-07: Telephony: Use essential records loaded state for data call
+// QTI_BEGIN: 2022-03-06: Telephony: Use essential records loaded state for data call
     protected void registerForIccRecordEvents() {
-// QTI_END: 2022-03-07: Telephony: Use essential records loaded state for data call
+// QTI_END: 2022-03-06: Telephony: Use essential records loaded state for data call
         IccRecords r = mIccRecords.get();
         if (r == null) {
             return;
@@ -4289,9 +4269,9 @@ public class GsmCdmaPhone extends Phone {
         }
     }
 
-// QTI_BEGIN: 2022-03-07: Telephony: Use essential records loaded state for data call
+// QTI_BEGIN: 2022-03-06: Telephony: Use essential records loaded state for data call
     protected void unregisterForIccRecordEvents() {
-// QTI_END: 2022-03-07: Telephony: Use essential records loaded state for data call
+// QTI_END: 2022-03-06: Telephony: Use essential records loaded state for data call
         IccRecords r = mIccRecords.get();
         if (r == null) {
             return;
@@ -4552,17 +4532,13 @@ public class GsmCdmaPhone extends Phone {
     // Return true if either CSIM or RUIM app is present
     @Override
     public boolean isCdmaSubscriptionAppPresent() {
-// QTI_BEGIN: 2018-09-28: Telephony: Add check before replacing volte RAT
         UiccCardApplication cdmaApplication =
                 mUiccController.getUiccCardApplication(mPhoneId, UiccController.APP_FAM_3GPP2);
         return cdmaApplication != null && (cdmaApplication.getType() == AppType.APPTYPE_CSIM ||
                 cdmaApplication.getType() == AppType.APPTYPE_RUIM);
     }
 
-// QTI_END: 2018-09-28: Telephony: Add check before replacing volte RAT
-// QTI_BEGIN: 2018-01-31: Telephony: Enable vendor Telephony plugin
     protected void phoneObjectUpdater(int newVoiceRadioTech) {
-// QTI_END: 2018-01-31: Telephony: Enable vendor Telephony plugin
         logd("phoneObjectUpdater: newVoiceRadioTech=" + newVoiceRadioTech);
         if (mFeatureFlags.phoneTypeCleanup()) {
             logd("phoneObjectUpdater: no-op as CDMA cleanup flag is set");
@@ -4579,9 +4555,7 @@ public class GsmCdmaPhone extends Phone {
                 int volteReplacementRat =
                         b.getInt(CarrierConfigManager.KEY_VOLTE_REPLACEMENT_RAT_INT);
                 logd("phoneObjectUpdater: volteReplacementRat=" + volteReplacementRat);
-// QTI_BEGIN: 2018-09-28: Telephony: Add check before replacing volte RAT
                 if (volteReplacementRat != ServiceState.RIL_RADIO_TECHNOLOGY_UNKNOWN &&
-// QTI_END: 2018-09-28: Telephony: Add check before replacing volte RAT
                            //In cdma case, replace rat only if csim or ruim app present
                            (ServiceState.isGsm(volteReplacementRat) ||
                            isCdmaSubscriptionAppPresent())) {
@@ -4928,10 +4902,8 @@ public class GsmCdmaPhone extends Phone {
     private static final int[] VOICE_PS_CALL_RADIO_TECHNOLOGY = {
             ServiceState.RIL_RADIO_TECHNOLOGY_LTE,
             ServiceState.RIL_RADIO_TECHNOLOGY_LTE_CA,
-// QTI_BEGIN: 2019-05-04: Telephony: Support for NR radio technology
             ServiceState.RIL_RADIO_TECHNOLOGY_IWLAN,
             ServiceState.RIL_RADIO_TECHNOLOGY_NR
-// QTI_END: 2019-05-04: Telephony: Support for NR radio technology
     };
 
     /**
@@ -5227,14 +5199,12 @@ public class GsmCdmaPhone extends Phone {
             return;
         }
 
-// QTI_BEGIN: 2023-11-10: Telephony: Remove legacy subscription code
         SubscriptionInfo info = mSubscriptionManagerService
                 .getAllSubInfoList(mContext.getOpPackageName(), mContext.getAttributionTag())
                 .stream()
                 .filter(subInfo -> subInfo.getIccId().equals(IccUtils.stripTrailingFs(iccId)))
                 .findFirst()
                 .orElse(null);
-// QTI_END: 2023-11-10: Telephony: Remove legacy subscription code
 
         logd("reapplyUiccAppsEnablementIfNeeded: retries=" + retries + ", subInfo=" + info);
 
@@ -5322,12 +5292,10 @@ public class GsmCdmaPhone extends Phone {
                 config.getBoolean(CarrierConfigManager.KEY_VONR_ON_BY_DEFAULT_BOOL);
 
         int setting = -1;
-// QTI_BEGIN: 2023-11-10: Telephony: Remove legacy subscription code
         SubscriptionInfoInternal subInfo = mSubscriptionManagerService
                 .getSubscriptionInfoInternal(getSubId());
         if (subInfo != null) {
             setting = subInfo.getNrAdvancedCallingEnabled();
-// QTI_END: 2023-11-10: Telephony: Remove legacy subscription code
         }
 
         logd("VoNR setting from telephony.db:"
