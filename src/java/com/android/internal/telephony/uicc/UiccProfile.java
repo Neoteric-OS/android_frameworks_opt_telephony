@@ -1610,6 +1610,9 @@ public class UiccProfile extends IccCard {
                     mCarrierPrivilegeRules = null;
                     mContext.getContentResolver().unregisterContentObserver(
                             mProvisionCompleteContentObserver);
+                    // Discard stale pending callback from the old rules object to prevent it
+                    // from firing on disposed IccRecords.
+                    mHandler.removeMessages(EVENT_CARRIER_PRIVILEGES_LOADED);
                     changed = true;
                 }
                 // CatService shall be disposed only when a card level reset happens.
